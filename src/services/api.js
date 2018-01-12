@@ -60,8 +60,8 @@ export async function queryFakeList(params) {
   return request(`/api/fake_list?${stringify(params)}`);
 }
 
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+export async function accountLogin(params) {
+  return request('http://120.78.136.225:20001/Scm/Account/AntLogin', {
     method: 'POST',
     body: params,
   });
