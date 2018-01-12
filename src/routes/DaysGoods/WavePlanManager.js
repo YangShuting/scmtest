@@ -26,9 +26,9 @@ export default class WavePlanManager extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'rule/fetch',
-    });
+    // dispatch({
+    //   type: 'rule/fetch',
+    // });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {

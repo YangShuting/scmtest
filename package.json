@@ -3,6 +3,7 @@
   "version": "0.3.1",
   "description": "An out-of-box UI solution for enterprise applications",
   "private": true,
+  "proxy": "http://localhost:3000",
   "scripts": {
     "precommit": "npm run lint-staged",
     "start": "cross-env DISABLE_ESLINT=true roadhog dev",

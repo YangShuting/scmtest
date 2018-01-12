@@ -44,9 +44,11 @@ export default function request(url, options) {
   const defaultOptions = {
     credentials: 'include',
   };
+  url = '../' + url
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     newOptions.headers = {
+      mode : 'no-cors',
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
       ...newOptions.headers,

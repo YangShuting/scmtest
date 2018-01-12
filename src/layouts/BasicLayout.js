@@ -14,7 +14,7 @@ import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
 import { getMenuData } from '../common/menu';
-import logo from '../assets/logo.png';
+import logo from '../assets/standar-logo.png';
 
 const { Content } = Layout;
 const { AuthorizedRoute } = Authorized;
@@ -86,7 +86,7 @@ class BasicLayout extends React.PureComponent {
       });
     });
     this.props.dispatch({
-      type: 'user/fetchCurrent',
+      type: 'user/checkUser',
     });
   }
   getPageTitle() {
@@ -178,7 +178,7 @@ class BasicLayout extends React.PureComponent {
                     <Redirect key={item.from} exact from={item.from} to={item.to} />
                   )
                 }
-                <Redirect exact from="/" to="/dashboard/analysis" />
+                <Redirect exact from="/" to="/daysgoods/wave-plan-manager" />
                 <Route render={NotFound} />
               </Switch>
             </div>

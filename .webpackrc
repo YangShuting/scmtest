@@ -17,5 +17,11 @@
     "template": "./src/index.ejs"
   },
   "disableDynamicImport": false,
-  "hash": true
+  "hash": true,
+  "proxy": {
+    "/": {
+      "target": "http://120.78.136.225:20001",
+      "changeOrigin": true
+    }
+  }
 }
