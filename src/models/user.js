@@ -23,6 +23,24 @@ export default {
         payload: response,
       });
     },
+    *registerUser(_, { put }){
+      yield put({
+        type: 'saveCurrentUser',
+        payload: {
+          "name": "Serati Ma",
+          "avatar": "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png",
+          "userid": "00000001",
+          "notifyCount": 12
+        }
+      })
+    },
+    *checkUser(_,{call,put}) {
+      if(localStorage.getItem('antd-pro-authority')=='user'){
+        yield put({
+          type: 'registerUser'
+        });
+      }
+    },
   },
 
   reducers: {
@@ -33,6 +51,7 @@ export default {
       };
     },
     saveCurrentUser(state, action) {
+      console.log(action.payload)
       return {
         ...state,
         currentUser: action.payload,
