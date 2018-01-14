@@ -52,7 +52,7 @@ export default class LoginPage extends Component {
     return (
       <div className={styles.main}>
         <Login
-          className="login-tab" 
+          className="login-tab"
           defaultActiveKey={type}
           onTabChange={this.onTabChange}
           onSubmit={this.handleSubmit}

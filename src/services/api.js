@@ -60,12 +60,12 @@ export async function queryFakeList(params) {
   return request(`/api/fake_list?${stringify(params)}`);
 }
 
-export async function accountLogin(params) {
-  return request('http://120.78.136.225:20001/Scm/Account/AntLogin', {
-    method: 'POST',
-    body: params,
-  });
-}
+// export async function accountLogin(params) {
+//   return request('http://120.78.136.225:20001/Scm/Account/AntLogin', {
+//     method: 'POST',
+//     body: params,
+//   });
+// }
 
 export async function fakeRegister(params) {
   return request('/api/register', {
@@ -79,17 +79,26 @@ export async function queryNotices() {
 }
 
 
-/////////////////////////////new api/////////////////////////////
+// ///////////////////////////new api/////////////////////////////
 /**
  * 登录接口
- * @param {*} params 
+ * @param {*} params
  */
 export async function accountLogin(params) {
-  return request('Scm/Account/AntLogin?username='+params.userName + '&password=' + params.password, {
+  return request(`Scm/Account/AntLogin?username=${params.userName}&password=${params.password}`, {
     method: 'GET',
     // body: params,
   });
 }
+/**
+ * 菜单接口
+ */
+export async function getUserMenu() {
+  return request(`${'Home/GetTreeByAnt' + '?token='}${localStorage.getItem('token')}`, {
+    method: 'GET',
+  });
+}
+
 /**
  * 获取字典接口
  */
@@ -107,7 +116,7 @@ export async function paramesGetBandYear() {
     method: 'GET',
   });
 }
-  
+
 /**
  * 获取类别接口
  */
@@ -116,7 +125,7 @@ export async function paramesGetCategory() {
     method: 'GET',
   });
 }
-  
+
 /**
  * 获取店铺接口
  */
@@ -130,12 +139,11 @@ export async function paramesGetShop() {
  * 获取打分项接口
  */
 export async function paramesGetScoreItem() {
-  return request('scm/Dict/GetGetScoreItemShop', {
+  return request('scm/Dict/GetScoreItem', {
     method: 'GET',
   });
 }
 
-  
 /**
  * 获取供应商接口
  */
@@ -144,4 +152,37 @@ export async function paramesGetVender() {
     method: 'GET',
   });
 }
-  
+
+/**
+ * 获取波段需求列表
+ */
+export async function getWaveBandData(parames) {
+  const str = getQueryStr(parames);
+  return request(`scm/Band/QueryList${str}`, {
+    method: 'GET',
+  });
+}
+
+/**
+ * 波段需求操作
+ */
+export async function reqWaveBand(parames) {
+  const method = parames.type === 'Edit' || parames.type === 'Create' ? 'POST' : 'GET';
+  const query = parames.type === 'Edit' || parames.type === 'Create' ? '' : getQueryStr(parames.data);
+  return request(`scm/Band/${parames.type}${query}`, {
+    method,
+    body: parames.data,
+  });
+}
+
+function getQueryStr(obj) {
+  if (!obj) {
+    return '';
+  }
+  let str = '?';
+  Object.keys(obj).forEach((item) => {
+    str = `${str + item}=${obj[item]}&`;
+  });
+  return str;
+}
+

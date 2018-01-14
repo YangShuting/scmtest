@@ -1,5 +1,7 @@
 import fetch from 'dva/fetch';
 import { notification } from 'antd';
+import { ucs2 } from 'punycode';
+import { fail } from 'assert';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',
@@ -27,10 +29,39 @@ function checkStatus(response) {
     message: `请求错误 ${response.status}: ${response.url}`,
     description: errortext,
   });
-  const error = new Error(errortext);
-  error.name = response.status;
-  error.response = response;
-  throw error;
+  // localStorage.removeItem('antd-pro-authority')
+  // const error = new Error(errortext);
+  // error.name = response.status;
+  // error.response = response;
+  // throw error;
+}
+
+function getMenuPid() {
+  const userMenu = window.__tmpMenu;
+  if (!userMenu) {
+    return '';
+  }
+  const url = window.location.hash.substr(2);
+  const sign = url.indexOf('?');
+  let paths = [];
+  if (sign > 0) {
+    paths = url.substr(0, sign).split('/');
+  } else {
+    paths = url.substr(0).split('/');
+  }
+  return checkMenuUrl(userMenu, paths);
+}
+
+function checkMenuUrl(userMenu, paths, index = 0) {
+  userMenu.forEach((element) => {
+    if (element.path === paths[index]) {
+      if (paths.length === index + 1) {
+        window.__currentMenu = element.PId;
+      } else if (element.children) {
+        checkMenuUrl(element.children, paths, index + 1);
+      }
+    }
+  });
 }
 
 /**
@@ -44,19 +75,26 @@ export default function request(url, options) {
   const defaultOptions = {
     credentials: 'include',
   };
-  url = '../' + url
+  getMenuPid();
+  const realUrl = `../${url}`;
   const newOptions = { ...defaultOptions, ...options };
+  newOptions.headers = {
+    mode: 'no-cors',
+    token: localStorage.getItem('token'),
+    module: window.__currentMenu,
+    ...newOptions.headers,
+  };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     newOptions.headers = {
-      mode : 'no-cors',
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
       ...newOptions.headers,
     };
+    console.log(newOptions.body);
     newOptions.body = JSON.stringify(newOptions.body);
   }
 
-  return fetch(url, newOptions)
+  return fetch(realUrl, newOptions)
     .then(checkStatus)
     .then((response) => {
       if (newOptions.method === 'DELETE' || response.status === 204) {

@@ -94,7 +94,6 @@ function generator({ defaultProps, defaultRules, type }) {
 
 const LoginItem = {};
 Object.keys(map).forEach((item) => {
-  
   LoginItem[item] = generator({
     defaultProps: map[item].props,
     defaultRules: map[item].rules,

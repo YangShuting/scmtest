@@ -6,6 +6,7 @@ import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
 import logo from '../assets/standar-logo.png';
 import { getRoutes } from '../utils/utils';
+
 const links = [];
 
 const copyright = <div>Copyright <Icon type="copyright" /> 2018 SCM天天惠供应链</div>;

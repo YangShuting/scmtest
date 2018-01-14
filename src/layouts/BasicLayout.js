@@ -13,30 +13,14 @@ import SiderMenu from '../components/SiderMenu';
 import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
-import { getMenuData } from '../common/menu';
+// import { formatter , getMenuData } from '../common/menu';
+
 import logo from '../assets/standar-logo.png';
+
 
 const { Content } = Layout;
 const { AuthorizedRoute } = Authorized;
 
-/**
- * 根据菜单取得重定向地址.
- */
-const redirectData = [];
-const getRedirect = (item) => {
-  if (item && item.children) {
-    if (item.children[0] && item.children[0].path) {
-      redirectData.push({
-        from: `/${item.path}`,
-        to: `/${item.children[0].path}`,
-      });
-      item.children.forEach((children) => {
-        getRedirect(children);
-      });
-    }
-  }
-};
-getMenuData().forEach(getRedirect);
 
 const query = {
   'screen-xs': {
@@ -90,9 +74,10 @@ class BasicLayout extends React.PureComponent {
     });
   }
   getPageTitle() {
-    const { routerData, location } = this.props;
+    const { routerData, location, userMenu } = this.props;
     const { pathname } = location;
     let title = 'SCM供应链管理系统';
+
     if (routerData[pathname] && routerData[pathname].name) {
       title = `${routerData[pathname].name} - SCM供应链管理系统`;
     }
@@ -127,8 +112,9 @@ class BasicLayout extends React.PureComponent {
   }
   render() {
     const {
-      currentUser, collapsed, fetchingNotices, notices, routerData, match, location,
+      currentUser, collapsed, fetchingNotices, notices, routerData, match, location, userMenu, redirectData,
     } = this.props;
+    const defaultRoute = userMenu[0] ? userMenu[0].path : '';
     const layout = (
       <Layout>
         <SiderMenu
@@ -137,7 +123,7 @@ class BasicLayout extends React.PureComponent {
           // If you do not have the Authorized parameter
           // you will be forced to jump to the 403 interface without permission
           Authorized={Authorized}
-          menuData={getMenuData()}
+          menuData={userMenu}
           collapsed={collapsed}
           location={location}
           isMobile={this.state.isMobile}
@@ -178,7 +164,7 @@ class BasicLayout extends React.PureComponent {
                     <Redirect key={item.from} exact from={item.from} to={item.to} />
                   )
                 }
-                <Redirect exact from="/" to="/daysgoods/wave-plan-manager" />
+                <Redirect exact from="/" to={defaultRoute} />
                 <Route render={NotFound} />
               </Switch>
             </div>
@@ -222,6 +208,8 @@ class BasicLayout extends React.PureComponent {
 
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
+  userMenu: user.userMenu,
+  redirectData: user.redirectData,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,

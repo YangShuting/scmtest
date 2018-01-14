@@ -160,8 +160,8 @@ export default class WavePlanManager extends PureComponent {
             <FormItem label="波段(多选)">
               {getFieldDecorator('no')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">关闭</Option>
-                    <Option value="1">运行中</Option>
+                  <Option value="0">关闭</Option>
+                  <Option value="1">运行中</Option>
                 </Select>
               )}
             </FormItem>
@@ -195,36 +195,36 @@ export default class WavePlanManager extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-        <Col md={8} sm={24}>
+          <Col md={8} sm={24}>
             <FormItem label="波段(多选)">
-            {getFieldDecorator('no')(
+              {getFieldDecorator('no')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">关闭</Option>
-                    <Option value="1">运行中</Option>
+                  <Option value="0">关闭</Option>
+                  <Option value="1">运行中</Option>
                 </Select>
             )}
             </FormItem>
-        </Col>
-        <Col md={8} sm={24}>
+          </Col>
+          <Col md={8} sm={24}>
             <FormItem label="风格(多选)">
-            {getFieldDecorator('status')(
+              {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                <Option value="0">关闭</Option>
-                <Option value="1">运行中</Option>
+                  <Option value="0">关闭</Option>
+                  <Option value="1">运行中</Option>
                 </Select>
             )}
             </FormItem>
-        </Col>
+          </Col>
           <Col md={8} sm={24}>
             <FormItem label="年份(多选)">
-                {getFieldDecorator('status')(
+              {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                    <Option value="0">关闭</Option>
-                    <Option value="1">运行中</Option>
+                  <Option value="0">关闭</Option>
+                  <Option value="1">运行中</Option>
                 </Select>
                 )}
             </FormItem>
-            </Col>
+          </Col>
         </Row>
         <div style={{ overflow: 'hidden' }}>
           <span style={{ float: 'right', marginBottom: 24 }}>

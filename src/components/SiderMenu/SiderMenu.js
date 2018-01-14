@@ -15,7 +15,8 @@ const getIcon = (icon) => {
     return <img src={icon} alt="icon" className={styles.icon} />;
   }
   if (typeof icon === 'string') {
-    return <Icon type={icon} />;
+    // return <Icon type={icon} />;
+    return <Icon type="tags-o" />;
   }
   return icon;
 };
@@ -23,7 +24,7 @@ const getIcon = (icon) => {
 export default class SiderMenu extends PureComponent {
   constructor(props) {
     super(props);
-    this.menus = props.menuData;
+    // this.menus = props.menuData;
     this.state = {
       openKeys: this.getDefaultCollapsedSubMenus(props),
     };
@@ -64,7 +65,7 @@ export default class SiderMenu extends PureComponent {
     return keys;
   }
   getSelectedMenuKeys = (path) => {
-    const flatMenuKeys = this.getFlatMenuKeys(this.menus);
+    const flatMenuKeys = this.getFlatMenuKeys(this.props.menuData);
     if (flatMenuKeys.indexOf(path.replace(/^\//, '')) > -1) {
       return [path.replace(/^\//, '')];
     }
@@ -171,7 +172,7 @@ export default class SiderMenu extends PureComponent {
   }
   handleOpenChange = (openKeys) => {
     const lastOpenKey = openKeys[openKeys.length - 1];
-    const isMainMenu = this.menus.some(
+    const isMainMenu = this.props.menuData.some(
       item => lastOpenKey && (item.key === lastOpenKey || item.path === lastOpenKey)
     );
     this.setState({
@@ -179,7 +180,7 @@ export default class SiderMenu extends PureComponent {
     });
   }
   render() {
-    const { logo, collapsed, location: { pathname }, onCollapse } = this.props;
+    const { logo, collapsed, location: { pathname }, onCollapse, menuData } = this.props;
     const { openKeys } = this.state;
     // Don't show popup menu when it is been collapsed
     const menuProps = collapsed ? {} : {
@@ -215,7 +216,7 @@ export default class SiderMenu extends PureComponent {
           selectedKeys={selectedKeys}
           style={{ padding: '16px 0', width: '100%' }}
         >
-          {this.getNavMenuItems(this.menus)}
+          {this.getNavMenuItems(menuData)}
         </Menu>
       </Sider>
     );

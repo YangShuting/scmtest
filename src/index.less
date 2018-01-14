@@ -21,7 +21,41 @@ body {
 
 // temp fix for https://github.com/ant-design/ant-design/commit/a1fafb5b727b62cb0be29ce6e9eca8f579d4f8b7
 :global {
+  .xw-tx-center{
+    text-align: center;
+  }
+  .xw-tx-left{
+    text-align: left;
+  }
+  .xw-tx-right{
+    text-align: right;
+  }
+
   .ant-spin-container {
     overflow: visible;
   }
+  .ant-calendar-picker {
+    width: 100%;
+  }
+  .xw-table{
+    .ant-table-thead>tr>th {
+        padding: 4px 8px;
+        color: #666;
+        font-weight: bold;
+        &.xw-tx-center {
+            .xw-tx-center;
+        }
+        &.span {
+            display: block;
+            height: 42px;
+            // .dealOverFlowText;
+            // max-width: 82px;
+        }
+    }
+    .ant-table-tbody>tr>td {
+        padding: 8px 8px;
+        color: #333;
+    }
+    tr:nth-child(even){background:#FAFAFA;}
+}
 }

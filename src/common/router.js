@@ -68,7 +68,7 @@ function getFlatMenuData(menus) {
 export const getRouterData = (app) => {
   const routerConfig = {
     '/': {
-      component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
+      component: dynamicWrapper(app, ['user', 'login', 'sysparames'], () => import('../layouts/BasicLayout')),
     },
     '/user': {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/UserLayout')),
@@ -76,9 +76,15 @@ export const getRouterData = (app) => {
     '/user/login': {
       component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
     },
-    '/daysgoods/wave-plan-manager': {
-      component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),
+    '/wave/demand': {
+      component: dynamicWrapper(app, ['waveDemand', 'sysparames'], () => import('../routes/Wave/Demand')),
     },
+    '/sample/apply': {
+      component: dynamicWrapper(app, [], () => import('../routes/Sample/Apply')),
+    },
+    // '/daysgoods/wave-plan-manager': {
+    //   component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),
+    // },
     // '/user/:id': {
     //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
     // },
