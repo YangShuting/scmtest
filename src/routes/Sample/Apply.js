@@ -1,261 +1,182 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import {
-  Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
-} from 'antd';
+import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message } from 'antd';
+import WavePlanTable from '../../components/SCMTable/WavePlanTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './style.less';
-import { Upload, message } from 'antd';
-import { Checkbox } from 'antd';
+// import DemandForm from './DemandForm';
+// import DemandDetail from './DemandDetail';
+import { handleFormReset, handleSearch, toggleForm, renderSimpleForm, renderAdvancedForm, renderForm } from './DemandSearchFilter';
+
+
+import styles from '../Wave/Demand.less';
+
+const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
+const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['form/submitRegularForm'],
+@connect(({ sampleApply, loading, sysparames }) => ({
+  sampleApply,
+  sysparames,
+  loading: loading.models.sampleApply,
 }))
 @Form.create()
-export default class BasicForms extends PureComponent {
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.props.dispatch({
-          type: 'form/submitRegularForm',
-          payload: values,
-        });
-      }
-    });
-  }
-  render() {
-    const { submitting } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 7 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 12 },
-        md: { span: 10 },
-      },
+export default class Demand extends PureComponent {
+    state = {
+      addInputValue: '',
+      modalVisible: false,
+      queryVisible: false,
+      expandForm: false,
+      selectedRows: [],
+      formValues: {},
+      item: {},
+      editItem: {},
     };
+    
+    handleFormReset = handleFormReset.bind(this);
+    handleSearch = handleSearch.bind(this);
+    toggleForm = toggleForm.bind(this);
+    renderSimpleForm = renderSimpleForm.bind(this);
+    renderAdvancedForm = renderAdvancedForm.bind(this);
+    renderForm = renderForm.bind(this);
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
-    };
-    const props = {
-        name: 'file',
-        action: '//jsonplaceholder.typicode.com/posts/',
-        headers: {
-          authorization: 'authorization-text',
+    componentDidMount() {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'sampleApply/fetch',
+        payload: {
+          start: 0,
+          length: 9,
         },
-        onChange(info) {
-          if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
-          }
-          if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-          } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
-          }
-        },
+      });
+    }
+
+    handleStandardTableChange = (pagination, filtersArg, sorter) => {
+      const { dispatch } = this.props;
+      const { formValues } = this.state;
+
+      const filters = Object.keys(filtersArg).reduce((obj, key) => {
+        const newObj = { ...obj };
+        newObj[key] = getValue(filtersArg[key]);
+        return newObj;
+      }, {});
+
+      const params = {
+        start: pagination.current - 1,
+        length: pagination.pageSize,
+        ...formValues,
+        ...filters,
       };
-      
-    return (
-      <PageHeaderLayout title="样衣申请" >
-        <Card bordered={false}>
-          <Form
-            onSubmit={this.handleSubmit}
-            hideRequiredMark
-            style={{ marginTop: 8 }}
-          >
-            <FormItem
-              {...formItemLayout}
-              label="样衣图片" className="Avatar-lable"
-            >
-              <Upload {...props}>
-                <Button>
-                    <Icon type="upload" /> Click to Upload
-                </Button>
-            </Upload>
-                <span>建议尺寸：800*800PX，单张大小不超过2M，最多可上传3张</span>
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="供应商编码"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入供应商编码',
-                }],
-              })(
-                <Input placeholder="供应商编码" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="供应商名称"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入供应商名称',
-                }],
-              })(
-                <Input placeholder="供应商名称" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="波段号"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入波段号',
-                }],
-              })(
-                <Input placeholder="波段号" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="品类"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入品类',
-                }],
-              })(
-                <Input placeholder="品类" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="大类"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入大类',
-                }],
-              })(
-                <Input placeholder="大类" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="供应商货号"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入供应商货号',
-                }],
-              })(
-                <Input placeholder="供应商货号" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="供应商主款"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入供应商主款',
-                }],
-              })(
-                <Input placeholder="供应商主款" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="合作方式"
-            >
-              {getFieldDecorator('title', {
-                rules: [{
-                  required: true, message: '请输入供应商主款',
-                }],
-              })(
-                <Checkbox >试销</Checkbox>
+      if (sorter.field) {
+        params.sorter = `${sorter.field}_${sorter.order}`;
+      }
 
-              )}
-            </FormItem>
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                提交
-              </Button>
-              <Button style={{ marginLeft: 8 }}>保存</Button>
-            </FormItem>
-          </Form>
-        </Card>
-      </PageHeaderLayout>
-    );
-  }
+      dispatch({
+        type: 'sampleApply/fetch',
+        payload: params,
+      });
+    }
+
+    handleModalVisible = (flag) => {
+      this.setState({
+        modalVisible: !!flag,
+      });
+    }
+
+    handleQueryVisible = (flag) => {
+      this.setState({
+        queryVisible: !!flag,
+      });
+    }
+
+    handleAddInput = (e) => {
+      this.setState({
+        addInputValue: e.target.value,
+      });
+    }
+
+    handleAdd = () => {
+      this.props.dispatch({
+        type: 'sampleApply/add',
+        payload: {
+          description: this.state.addInputValue,
+        },
+      });
+
+      message.success('添加成功');
+      this.setState({
+        modalVisible: false,
+      });
+    }
+    hanldeDeleteData = item => () => {
+      confirm({
+        title: '你确定要这么操作',
+        content: `波段号为${item.bandid}, 波段名称为${item.bandname}会在数据库中删除，请注意！`,
+        onOk: () => {
+          this.props.dispatch({
+            type: 'sampleApply/itemHandle',
+            payload: {
+              type: 'Delete',
+              data: { id: item.id },
+            },
+          });
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    }
+    hanldeEditData = item => () => {
+      this.props.dispatch({
+        type: 'sampleApply/setEditData',
+        payload: item,
+      });
+    }
+    queryData = item => () => {
+      this.props.dispatch({
+        type: 'sampleApply/setQueryData',
+        payload: item,
+      });
+    }
+
+    render() {
+      const { sampleApply: { data }, loading } = this.props;
+      const { selectedRows, modalVisible, addInputValue, queryVisible, editItem } = this.state;
+      const funs = {
+        Create: this.handleAdd,
+        Delete: this.hanldeDeleteData,
+        Edit: this.hanldeEditData,
+        Query: this.queryData,
+      };
+
+      return (
+        <PageHeaderLayout title="波段计划管理">
+          <Card bordered={false}>
+            <div className={styles.tableList}>
+              <div className={styles.tableListForm}>
+                {this.renderForm()}
+              </div>
+              <div className={styles.tableListOperator}>
+                <Button icon="plus" type="primary" onClick={() => this.props.dispatch({ type: 'sampleApply/setEditData', payload: {} })}>
+                                新建
+                </Button>
+                <Button icon="export" type="nomal" onClick={() => this.handleModalVisible(true)}>
+                                导出
+                </Button>
+              </div>
+              <WavePlanTable
+                funs={funs}
+                loading={loading}
+                data={data}
+                onChange={this.handleStandardTableChange}
+              />
+            </div>
+          </Card>
+          {/* <DemandForm /> */}
+          {/* <DemandDetail /> */}
+        </PageHeaderLayout>
+      );
+    }
 }
 
-
-
-// function getBase64(img, callback) {
-//     const reader = new FileReader();
-//     reader.addEventListener('load', () => callback(reader.result));
-//     reader.readAsDataURL(img);
-//   }
-  
-//   function beforeUpload(file) {
-//     const isJPG = file.type === 'image/jpeg';
-//     if (!isJPG) {
-//       message.error('You can only upload JPG file!');
-//     }
-//     const isLt2M = file.size / 1024 / 1024 < 2;
-//     if (!isLt2M) {
-//       message.error('Image must smaller than 2MB!');
-//     }
-//     return isJPG && isLt2M;
-//   }
-  
-//   class Avatar extends React.Component {
-//     state = {
-//       loading: false,
-//     };
-//     handleChange = (info) => {
-//       if (info.file.status === 'uploading') {
-//         this.setState({ loading: true });
-//         return;
-//       }
-//       if (info.file.status === 'done') {
-//         // Get this url from response in real world.
-//         getBase64(info.file.originFileObj, imageUrl => this.setState({
-//           imageUrl,
-//           loading: false,
-//         }));
-//       }
-//     }
-//     render() {
-//       const uploadButton = (
-//         <div>
-//           <Icon type={this.state.loading ? 'loading' : 'plus'} />
-//           <div className="ant-upload-text">Upload</div>
-//         </div>
-//       );
-//       const imageUrl = this.state.imageUrl;
-//       return (
-//         <Upload
-//           name="avatar"
-//           listType="picture-card"
-//           className="avatar-uploader"
-//           showUploadList={false}
-//           action="//jsonplaceholder.typicode.com/posts/"
-//           beforeUpload={beforeUpload}
-//           onChange={this.handleChange}
-//         >
-//           {imageUrl ? <img src={imageUrl} alt="" /> : uploadButton}
-//         </Upload>
-//       );
-//     }
-//   }
-  

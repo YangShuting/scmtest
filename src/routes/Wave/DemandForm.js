@@ -5,7 +5,7 @@ import moment from 'moment';
 import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge, getMomentFromStr } from '../../utils/ajust';
 import { connect } from 'dva';
 import { Tree } from 'antd';
-
+import Demand from './Demand.less'
 const TreeNode = Tree.TreeNode;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -17,9 +17,10 @@ class AdvancedForm extends PureComponent {
     state = {
         width: '100%',
         modal: false,
-        xlbtn: '',
+        xlbtn: undefined,
         pl: undefined,
         fg: undefined,
+        fileList: [],
     };
     componentDidMount() {
     }
@@ -31,12 +32,17 @@ class AdvancedForm extends PureComponent {
         });
     }
     componentWillReceiveProps(nextprops){
-        let {fgid,plid,xlid} = nextprops.item.data
-        this.setState({
-            xlbtn: xlid,
-            pl: plid,
-            fg: fgid,
-        });
+        let {fgid,plid,xlid } = nextprops.item.data
+        if(nextprops.item.data != this.props.item.data){
+            // this.state.fgid = fgid;
+            // this.state.plid = plid;
+            // this.state.xlid = xlid;
+            this.setState({
+                xlbtn: xlid,
+                pl: plid,
+                fg: fgid,
+            });
+        }
     }
     handleTreeData = (datas) => {
         this.setState({
@@ -50,6 +56,7 @@ class AdvancedForm extends PureComponent {
         setFieldsValue({ xlid: datas[3].categoryid });
     }
     render() {
+        const { xlbtn, pl, fg } = this.state;
         const { form, dispatch, submitting, item: { data }, sysparames: { category } } = this.props;
         const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = form;
         const validate = () => {
@@ -70,17 +77,27 @@ class AdvancedForm extends PureComponent {
             });
         };
 
-        const props = {
+        const uploadProps = {
             name: 'file',
-            action: '//jsonplaceholder.typicode.com/posts/',
+            action: '../FileUpload/Upload',
             headers: {
                 authorization: 'authorization-text',
             },
-            onChange(info) {
+            beforeUpload(file, fileList){
+                if(file.size/1024/1024>5){
+                    message.error(`${file.name} 必须小于等于5M！`);
+                    return false;
+                }
+            },
+            onChange:(info)=> {
+                this.setState({
+                    fileList : [info.file],
+                });
                 if (info.file.status !== 'uploading') {
                     console.log(info.file, info.fileList);
                 }
                 if (info.file.status === 'done') {
+                    
                     message.success(`${info.file.name} file uploaded successfully`);
                 } else if (info.file.status === 'error') {
                     message.error(`${info.file.name} file upload failed.`);
@@ -118,8 +135,16 @@ class AdvancedForm extends PureComponent {
                 </span>
             );
         };
-
-
+        let nowYear = new Date().getFullYear()
+        const yearList = [
+            {
+                key: nowYear,
+                value: nowYear
+            }, {
+                key: nowYear + 1,
+                value: nowYear + 1
+            }
+        ]
         return (
             <Modal
                 title="编辑波段数据"
@@ -161,16 +186,18 @@ class AdvancedForm extends PureComponent {
                         <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                             <Form.Item label="年份">
                                 {getFieldDecorator('Year', {
-                                    rules: [{}],
+                                    rules: [{ required: true, message: '请选择年份' }],
                                 })(
-                                    <Input disabled placeholder="年份系统自动生成" />
+                                    <Select  placeholder="请选择年份" style={{ width: '100%' }}>
+                                        {yearList.map(item => <Option key={item.key} value={item.key}>{item.value}</Option>)}
+                                    </Select>
                                     )}
                             </Form.Item>
                         </Col>
                         <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                             <Form.Item label="波段名称">
                                 {getFieldDecorator('bandname', {
-                                    rules: [{ required: true, message: '请输入波段名称' }],
+                                    rules: [{ required: true,len:4, message: '请正确输入波段名称(4位)' }],
                                 })(
                                     <Input placeholder="请输入波段名称" />
                                     )}
@@ -181,13 +208,13 @@ class AdvancedForm extends PureComponent {
                         <Col lg={6} md={12} sm={24}>
                             <Form.Item label="小类">
                                 <Button style={{ width: '100%', textAlign: 'left' }} type="nomal" onClick={this.handleTree}>
-                                    {this.state.xlbtn == '' ? '请点击选择树节点' : this.state.xlbtn}
+                                    {!xlbtn ? '请点击选择树节点' : xlbtn}
                                 </Button>
                             </Form.Item>
                         </Col>
                         <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                             <Form.Item label="风格">
-                                <Input disabled value={this.state.fg} placeholder="风格" />
+                                <Input disabled value={fg} placeholder="风格" />
                                 {/* {getFieldDecorator('fgid', {
                                     rules: [{ required: true, message: '风格' }],
                                 })(
@@ -197,7 +224,7 @@ class AdvancedForm extends PureComponent {
                         </Col>
                         <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                             <Form.Item label="品类">
-                                <Input disabled value={this.state.pl} placeholder="品类" />
+                                <Input disabled value={pl} placeholder="品类" />
 
                                 {/* {getFieldDecorator('plid', {
                                     rules: [{ required: true, message: '品类' }],
@@ -280,7 +307,7 @@ class AdvancedForm extends PureComponent {
                                 {getFieldDecorator('approver', {
                                     rules: [],
                                 })(
-                                    <Upload {...props}>
+                                    <Upload {...uploadProps} fileList={this.state.fileList}>
                                         <Button>
                                             <Icon type="upload" /> 添加附件
                                     </Button>
@@ -424,15 +451,15 @@ export class TreeChosen extends PureComponent {
         return (
             <Modal
                 title="选择4级小类"
-                width="90%"
+                // width="90%"
                 footer={null}
                 visible={this.props.modal}
                 // onOk={this.props.dispatch({type:'closeEdit'})}
                 onCancel={() => this.props.handelCancel()}
             >
                 <Row>
-                    <Col xl={24} >
-                        <Tree
+                    <Col xl={24}  >
+                        <Tree className={Demand.scmTree}
                             // checkable
                             checkStrictly
                             onExpand={this.onExpand}

@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message } from 'antd';
-import WavePlanTable from '../../components/WavePlanTable';
+import WavePlanTable from '../../components/SCMTable/WavePlanTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DemandForm from './DemandForm';
 import DemandDetail from './DemandDetail';
+import { handleFormReset, handleSearch, toggleForm, renderSimpleForm, renderAdvancedForm, renderForm } from './DemandSearchFilter';
 
-import { getTreeByLevel } from '../../utils/ajust';
 
 import styles from './Demand.less';
 
@@ -33,6 +33,13 @@ export default class Demand extends PureComponent {
       item: {},
       editItem: {},
     };
+    
+    handleFormReset = handleFormReset.bind(this);
+    handleSearch = handleSearch.bind(this);
+    toggleForm = toggleForm.bind(this);
+    renderSimpleForm = renderSimpleForm.bind(this);
+    renderAdvancedForm = renderAdvancedForm.bind(this);
+    renderForm = renderForm.bind(this);
 
     componentDidMount() {
       const { dispatch } = this.props;
@@ -71,56 +78,56 @@ export default class Demand extends PureComponent {
       });
     }
 
-    handleFormReset = () => {
-      const { form, dispatch } = this.props;
-      form.resetFields();
-      this.setState({
-        formValues: {},
-      });
-      dispatch({
-        type: 'waveDemand/fetch',
-        payload: {},
-      });
-    }
+    // handleFormReset = () => {
+    //   const { form, dispatch } = this.props;
+    //   form.resetFields();
+    //   this.setState({
+    //     formValues: {},
+    //   });
+    //   dispatch({
+    //     type: 'waveDemand/fetch',
+    //     payload: {},
+    //   });
+    // }
 
-    toggleForm = () => {
-      this.setState({
-        expandForm: !this.state.expandForm,
-      });
-    }
+    // toggleForm = () => {
+    //   this.setState({
+    //     expandForm: !this.state.expandForm,
+    //   });
+    // }
 
-    handleSearch = (e) => {
-      e.preventDefault();
+    // handleSearch = (e) => {
+    //   e.preventDefault();
 
-      const { dispatch, form, data } = this.props;
+    //   const { dispatch, form, data } = this.props;
 
-      form.validateFields((err, fieldsValue) => {
-        if (err) return;
+    //   form.validateFields((err, fieldsValue) => {
+    //     if (err) return;
 
-        const values = {
-          ...fieldsValue,
-        };
-        const realValue = {};
-        Object.keys(values).forEach((item) => {
-          if (values[item]) {
-            realValue[item] = values[item];
-          }
-        });
-        console.log(realValue);
-        this.setState({
-          formValues: realValue,
-        });
+    //     const values = {
+    //       ...fieldsValue,
+    //     };
+    //     const realValue = {};
+    //     Object.keys(values).forEach((item) => {
+    //       if (values[item]) {
+    //         realValue[item] = values[item];
+    //       }
+    //     });
+    //     console.log(realValue);
+    //     this.setState({
+    //       formValues: realValue,
+    //     });
 
-        dispatch({
-          type: 'waveDemand/fetch',
-          payload: {
-            ...realValue,
-            start: 0,
-            length: 9,
-          },
-        });
-      });
-    }
+    //     dispatch({
+    //       type: 'waveDemand/fetch',
+    //       payload: {
+    //         ...realValue,
+    //         start: 0,
+    //         length: 9,
+    //       },
+    //     });
+    //   });
+    // }
 
     handleModalVisible = (flag) => {
       this.setState({
@@ -184,98 +191,98 @@ export default class Demand extends PureComponent {
       });
     }
 
-    renderSimpleForm() {
-      const { getFieldDecorator } = this.props.form;
-      const { sysparames: { band, category } } = this.props;
-      const realCategory = getTreeByLevel(category, 2);
+    // renderSimpleForm() {
+    //   const { getFieldDecorator } = this.props.form;
+    //   const { sysparames: { band, category } } = this.props;
+    //   const realCategory = getTreeByLevel(category, 2);
 
-      return (
-        <Form onSubmit={this.handleSearch} layout="inline">
-          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={8} sm={24}>
-              <FormItem label="波段(多选)">
-                {getFieldDecorator('brand')(
-                  <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
-                    {band.map(item => <Option key={item.Key} value={item.Key}>{item.Value}</Option>)}
-                  </Select>
-                            )}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-              <FormItem label="风格(多选)">
-                {getFieldDecorator('fgid')(
-                  <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
-                    {realCategory.map(item => <Option key={item.categoryid} value={item.categoryid}>{item.categoryname}</Option>)}
-                  </Select>
-                            )}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-              <span className={styles.submitButtons}>
-                <Button type="primary" htmlType="submit">查询</Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-                <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                                展开 <Icon type="down" />
-                </a>
-              </span>
-            </Col>
-          </Row>
-        </Form>
-      );
-    }
+    //   return (
+    //     <Form onSubmit={this.handleSearch} layout="inline">
+    //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+    //         <Col md={8} sm={24}>
+    //           <FormItem label="波段(多选)">
+    //             {getFieldDecorator('brand')(
+    //               <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
+    //                 {band.map(item => <Option key={item.Key} value={item.Key}>{item.Value}</Option>)}
+    //               </Select>
+    //                         )}
+    //           </FormItem>
+    //         </Col>
+    //         <Col md={8} sm={24}>
+    //           <FormItem label="风格(多选)">
+    //             {getFieldDecorator('fgid')(
+    //               <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
+    //                 {realCategory.map(item => <Option key={item.categoryid} value={item.categoryid}>{item.categoryname}</Option>)}
+    //               </Select>
+    //                         )}
+    //           </FormItem>
+    //         </Col>
+    //         <Col md={8} sm={24}>
+    //           <span className={styles.submitButtons}>
+    //             <Button type="primary" htmlType="submit">查询</Button>
+    //             <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
+    //             <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+    //                             展开 <Icon type="down" />
+    //             </a>
+    //           </span>
+    //         </Col>
+    //       </Row>
+    //     </Form>
+    //   );
+    // }
 
-    renderAdvancedForm() {
-      const { getFieldDecorator } = this.props.form;
-      const { sysparames: { band, category, bandYear } } = this.props;
-      const realCategory = getTreeByLevel(category, 2);
+    // renderAdvancedForm() {
+    //   const { getFieldDecorator } = this.props.form;
+    //   const { sysparames: { band, category, bandYear } } = this.props;
+    //   const realCategory = getTreeByLevel(category, 2);
 
-      return (
-        <Form onSubmit={this.handleSearch} layout="inline">
-          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={8} sm={24}>
-              <FormItem label="波段(多选)">
-                {getFieldDecorator('brand')(
-                  <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
-                    {band.map(item => <Option value={item.Key} key={item.Key}>{item.Value}</Option>)}
-                  </Select>
-                            )}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-              <FormItem label="风格(多选)">
-                {getFieldDecorator('fgid')(
-                  <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
-                    {realCategory.map(item => <Option value={item.categoryid}>{item.categoryname}</Option>)}
-                  </Select>
-                            )}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-              <FormItem label="年份(多选)">
-                {getFieldDecorator('Year')(
-                  <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
-                    {bandYear.map(item => <Option key={item.Key} value={item.Key}>{item.Value}</Option>)}
-                  </Select>
-                            )}
-              </FormItem>
-            </Col>
-          </Row>
-          <div style={{ overflow: 'hidden' }}>
-            <span style={{ float: 'right', marginBottom: 24 }}>
-              <Button type="primary" htmlType="submit">查询</Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                            收起 <Icon type="up" />
-              </a>
-            </span>
-          </div>
-        </Form>
-      );
-    }
+    //   return (
+    //     <Form onSubmit={this.handleSearch} layout="inline">
+    //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+    //         <Col md={8} sm={24}>
+    //           <FormItem label="波段(多选)">
+    //             {getFieldDecorator('brand')(
+    //               <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
+    //                 {band.map(item => <Option value={item.Key} key={item.Key}>{item.Value}</Option>)}
+    //               </Select>
+    //                         )}
+    //           </FormItem>
+    //         </Col>
+    //         <Col md={8} sm={24}>
+    //           <FormItem label="风格(多选)">
+    //             {getFieldDecorator('fgid')(
+    //               <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
+    //                 {realCategory.map(item => <Option value={item.categoryid}>{item.categoryname}</Option>)}
+    //               </Select>
+    //                         )}
+    //           </FormItem>
+    //         </Col>
+    //         <Col md={8} sm={24}>
+    //           <FormItem label="年份(多选)">
+    //             {getFieldDecorator('Year')(
+    //               <Select optionFilterProp="children" mode="multiple" placeholder="请选择" style={{ width: '100%' }}>
+    //                 {bandYear.map(item => <Option key={item.Key} value={item.Key}>{item.Value}</Option>)}
+    //               </Select>
+    //                         )}
+    //           </FormItem>
+    //         </Col>
+    //       </Row>
+    //       <div style={{ overflow: 'hidden' }}>
+    //         <span style={{ float: 'right', marginBottom: 24 }}>
+    //           <Button type="primary" htmlType="submit">查询</Button>
+    //           <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
+    //           <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+    //                         收起 <Icon type="up" />
+    //           </a>
+    //         </span>
+    //       </div>
+    //     </Form>
+    //   );
+    // }
 
-    renderForm() {
-      return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-    }
+    // renderForm() {
+    //   return this.state.expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+    // }
 
     render() {
       const { waveDemand: { data }, loading } = this.props;
