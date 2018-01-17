@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import update from 'immutability-helper'
-import { DragDropContext } from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
-import Card from './Card'
+import React, { Component } from 'react';
+import update from 'immutability-helper';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+import Card from './Card';
 
 
 // @DragDropContext(HTML5Backend)
@@ -17,9 +17,9 @@ import Card from './Card'
 //         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
 //       }],
 //     };
-  
+
 //     handleCancel = () => this.setState({ previewVisible: false })
-  
+
 //     handlePreview = (file) => {
 //       this.setState({
 //         previewImage: file.url || file.thumbUrl,
@@ -29,9 +29,9 @@ import Card from './Card'
 //     onDrag =(e) => {
 //         console.log(e)
 //     }
-  
+
 //     handleChange = ({ fileList }) => this.setState({ fileList })
-  
+
 //     render() {
 //       const { previewVisible, previewImage, fileList } = this.state;
 //       const uploadButton = (
@@ -56,12 +56,6 @@ import Card from './Card'
 //       );
 //     }
 //   }
-
-
-
-
-
-
 
 
 // @DragDropContext(HTML5Backend)

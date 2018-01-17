@@ -21,7 +21,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
   sampleApply,
   sysparames,
   user,
-  defaultType:waveDemand.defaultType,
+  defaultType: waveDemand.defaultType,
   loading: loading.models.waveDemand,
 }))
 @Form.create()
@@ -36,7 +36,7 @@ export default class Demand extends PureComponent {
       item: {},
       editItem: {},
     };
-    
+
     handleFormReset = handleFormReset.bind(this);
     handleSearch = handleSearch.bind(this);
     toggleForm = toggleForm.bind(this);
@@ -295,7 +295,7 @@ export default class Demand extends PureComponent {
         Delete: this.hanldeDeleteData,
         Edit: this.hanldeEditData,
         Query: this.queryData,
-        Dispatch: this.props.dispatch
+        Dispatch: this.props.dispatch,
       };
 
         // const menu = (

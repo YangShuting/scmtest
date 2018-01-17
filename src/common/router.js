@@ -82,7 +82,7 @@ export const getRouterData = (app) => {
     '/sample/apply': {
       component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Apply')),
     },
-    //样衣照片审核
+    // 样衣照片审核
     '/sample/werwer': {
       component: dynamicWrapper(app, ['sampleWerwer'], () => import('../routes/Sample/Werwer')),
     },

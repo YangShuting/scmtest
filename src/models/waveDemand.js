@@ -3,14 +3,14 @@ import { getWaveBandData, removeRule, addRule, reqWaveBand } from '../services/a
 const namespace = 'waveDemand';
 
 export default {
-  namespace: namespace,
+  namespace,
 
   state: {
     data: {
       list: [],
       pagination: {},
     },
-    defaultType : `${namespace}/fetch`,
+    defaultType: `${namespace}/fetch`,
     Edit: { modal: false, data: {} },
     Query: { modal: false, data: {} },
   },

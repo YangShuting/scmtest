@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message } from 'antd';
+import { Row, Col, Checkbox, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal, message } from 'antd';
 import SamplyApply from '../../components/SCMTable/SamplyApply';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import ApplyForm from './ApplyForm';
 import ApplyDetail from './ApplyDetail';
+import InfiniteScroller from './InfiniteScroller';
 import { handleFormReset, handleSearch, toggleForm, renderSimpleForm, renderAdvancedForm, renderForm } from '../Wave/DemandSearchFilter';
 
 
@@ -19,7 +20,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @connect(({ sampleApply, loading, sysparames }) => ({
   sampleApply,
   sysparames,
-  defaultType:sampleApply.defaultType,
+  defaultType: sampleApply.defaultType,
   loading: loading.models.sampleApply,
 }))
 @Form.create()
@@ -34,7 +35,7 @@ export default class Demand extends PureComponent {
       item: {},
       editItem: {},
     };
-    
+
     handleFormReset = handleFormReset.bind(this);
     handleSearch = handleSearch.bind(this);
     toggleForm = toggleForm.bind(this);
@@ -140,15 +141,29 @@ export default class Demand extends PureComponent {
         payload: item,
       });
     }
+    AuditYes = item => () => {
+      this.props.dispatch({
+        type: 'sampleApply/AuditYes',
+        payload: item,
+      });
+    }
+    AuditNo = item => () => {
+      this.props.dispatch({
+        type: 'sampleApply/AuditNo',
+        payload: item,
+      });
+    }
 
     render() {
-      const { sampleApply: { data }, loading } = this.props;
+      const { sampleApply: { data: { list } }, loading } = this.props;
       const { selectedRows, modalVisible, addInputValue, queryVisible, editItem } = this.state;
       const funs = {
         Create: this.handleAdd,
         Delete: this.hanldeDeleteData,
         Edit: this.hanldeEditData,
         Query: this.queryData,
+        AuditYes: this.AuditYes,
+        AuditNo: this.AuditNo,
       };
 
       return (
@@ -159,20 +174,17 @@ export default class Demand extends PureComponent {
                 {this.renderForm()}
               </div>
               <div className={styles.tableListOperator}>
-                <Button icon="export" type="nomal" onClick={() => this.handleModalVisible(true)}>
-                                导出
+                <Checkbox >全选</Checkbox>
+                <Button type="primary" >
+                    批量合格
+                </Button>
+                <Button type="nomal" >
+                    批量不合格
                 </Button>
               </div>
-              <SamplyApply
-                funs={funs}
-                loading={loading}
-                data={data}
-                onChange={this.handleStandardTableChange}
-              />
+              <InfiniteScroller funs={funs} data={list} loading={loading} />
             </div>
           </Card>
-          <ApplyForm />
-          <ApplyDetail />
         </PageHeaderLayout>
       );
     }

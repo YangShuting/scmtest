@@ -19,7 +19,7 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 @connect(({ sampleApply, loading, sysparames }) => ({
   sampleApply,
   sysparames,
-  defaultType:sampleApply.defaultType,
+  defaultType: sampleApply.defaultType,
   loading: loading.models.sampleApply,
 }))
 @Form.create()
@@ -34,7 +34,7 @@ export default class Demand extends PureComponent {
       item: {},
       editItem: {},
     };
-    
+
     handleFormReset = handleFormReset.bind(this);
     handleSearch = handleSearch.bind(this);
     toggleForm = toggleForm.bind(this);
