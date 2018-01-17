@@ -1,13 +1,16 @@
 import { getWaveBandData, removeRule, addRule, reqWaveBand } from '../services/api';
 
+const namespace = 'waveDemand';
+
 export default {
-  namespace: 'waveDemand',
+  namespace: namespace,
 
   state: {
     data: {
       list: [],
       pagination: {},
     },
+    defaultType : `${namespace}/fetch`,
     Edit: { modal: false, data: {} },
     Query: { modal: false, data: {} },
   },
@@ -46,22 +49,6 @@ export default {
         default:
           break;
       }
-    },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
     },
   },
 

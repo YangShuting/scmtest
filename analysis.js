@@ -35,9 +35,9 @@ for (var index = 0; index < tmp.length; index++) {
     // jsona[tmp[index].dataIndex] = {value:tmp[index].dataIndex}
     console.log(tmp[index].dataIndex + ': ' + 'Form.createFormField({ value: "'+tmp[index].dataIndex +'"}),')
 }
-// console.log(jsona)
-// for (var index = 0; index < tmp.length; index++) {
-//     var element = tmp[index];
-//     console.log('<Description term="'+ element.title +'">{' +element.dataIndex + '}</Description>')
-// }
+console.log(jsona)
+for (var index = 0; index < tmp.length; index++) {
+    var element = tmp[index];
+    console.log('<Description term="'+ element.title +'">{' +element.dataIndex + '}</Description>')
+}
 

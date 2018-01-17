@@ -16,9 +16,12 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
-@connect(({ waveDemand, loading, sysparames }) => ({
+@connect(({ waveDemand, sampleApply, loading, sysparames, user }) => ({
   waveDemand,
+  sampleApply,
   sysparames,
+  user,
+  defaultType:waveDemand.defaultType,
   loading: loading.models.waveDemand,
 }))
 @Form.create()
@@ -285,13 +288,14 @@ export default class Demand extends PureComponent {
     // }
 
     render() {
-      const { waveDemand: { data }, loading } = this.props;
+      const { waveDemand: { data }, loading, user } = this.props;
       const { selectedRows, modalVisible, addInputValue, queryVisible, editItem } = this.state;
       const funs = {
         Create: this.handleAdd,
         Delete: this.hanldeDeleteData,
         Edit: this.hanldeEditData,
         Query: this.queryData,
+        Dispatch: this.props.dispatch
       };
 
         // const menu = (
@@ -333,6 +337,7 @@ export default class Demand extends PureComponent {
                             // selectedRows={selectedRows}
                 loading={loading}
                 data={data}
+                user={user}
                 onChange={this.handleStandardTableChange}
               />
             </div>

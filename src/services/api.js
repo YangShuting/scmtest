@@ -164,12 +164,36 @@ export async function getWaveBandData(parames) {
 }
 
 /**
- * 波段需求操作
+ * 获取波段需求列表
  */
 export async function reqWaveBand(parames) {
   const method = parames.type === 'Edit' || parames.type === 'Create' ? 'POST' : 'GET';
   const query = parames.type === 'Edit' || parames.type === 'Create' ? '' : getQueryStr(parames.data);
   return request(`scm/Band/${parames.type}${query}`, {
+    method,
+    body: parames.data,
+  });
+}
+
+
+/**
+ * 样衣申请操作
+ */
+export async function getSampleData(parames) {
+  const str = getQueryStr(parames);
+  return request(`scm/Sample/QueryList${str}`, {
+    method: 'GET',
+  });
+}
+
+
+/**
+ * 样衣需求操作
+ */
+export async function reqSample(parames) {
+  const method = parames.type === 'Edit' || parames.type === 'Create' ? 'POST' : 'GET';
+  const query = parames.type === 'Edit' || parames.type === 'Create' ? '' : getQueryStr(parames.data);
+  return request(`scm/Sample/${parames.type}${query}`, {
     method,
     body: parames.data,
   });

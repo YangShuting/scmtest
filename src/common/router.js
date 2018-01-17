@@ -77,10 +77,14 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['login'], () => import('../routes/User/Login')),
     },
     '/wave/demand': {
-      component: dynamicWrapper(app, ['waveDemand', 'sysparames'], () => import('../routes/Wave/Demand')),
+      component: dynamicWrapper(app, ['waveDemand', 'sampleApply', 'sysparames'], () => import('../routes/Wave/Demand')),
     },
     '/sample/apply': {
-      component: dynamicWrapper(app, [], () => import('../routes/Sample/Apply')),
+      component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Apply')),
+    },
+    //样衣照片审核
+    '/sample/werwer': {
+      component: dynamicWrapper(app, ['sampleWerwer'], () => import('../routes/Sample/Werwer')),
     },
     // '/daysgoods/wave-plan-manager': {
     //   component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),

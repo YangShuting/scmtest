@@ -17,10 +17,10 @@ import { getTreeByLevel } from '../../utils/ajust';
 import styles from './Demand.less';
 
 export function handleFormReset() {
-    const {form, dispatch} = this.props;
+    const {form, dispatch, defaultType} = this.props;
     form.resetFields();
     this.setState({formValues: {}});
-    dispatch({type: 'waveDemand/fetch', payload: {}});
+    dispatch({type: defaultType, payload: {}});
 }
 
 export function toggleForm() {
@@ -32,8 +32,8 @@ export function toggleForm() {
 export function handleSearch(e) {
     e.preventDefault();
 
-    const {dispatch, form, data} = this.props;
-
+    const {dispatch, form, data, defaultType} = this.props;
+    console.log(defaultType)
     form.validateFields((err, fieldsValue) => {
         if (err) 
             return;
@@ -53,7 +53,7 @@ export function handleSearch(e) {
         this.setState({formValues: realValue});
 
         dispatch({
-            type: 'waveDemand/fetch',
+            type: defaultType,
             payload: {
                 ...realValue,
                 start: 0,
