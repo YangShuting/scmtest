@@ -191,11 +191,12 @@ export default class Demand extends PureComponent {
             Delete: this.hanldeDeleteData,
             Edit: this.hanldeEditData,
             Query: this.queryData,
-            Audit: this.handleGroupSubmit,
+            AuditYes: this.AuditYes,
+            AuditNo: this.AuditNo,
         };
 
         return (
-            <PageHeaderLayout title="样衣照片审核">
+            <PageHeaderLayout title="样衣一审打分">
                 <Card bordered={false}>
                     <div className={styles.tableList}>
                         <div className={styles.tableListForm}>

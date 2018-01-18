@@ -187,9 +187,9 @@ export class Detail extends PureComponent {
                     </Col>
                 </Row>
                 <Row className="xw-tx-center">
-                    <Button>取消</Button>
-                    <Button>合格</Button>
-                    <Button>不及格</Button>
+                    <Button onClick={this.handleCancel}>取消</Button>
+                    <Button onClick={this.handleCancel}>合格</Button>
+                    <Button onClick={this.handleCancel}>不及格</Button>
                 </Row>
 
             </Modal>

@@ -115,7 +115,7 @@ export default class InfiniteListExample extends React.Component {
 
             {loading && hasMore && <Spin className="demo-loading" />}
           </InfiniteScroll>
-          <Detail modal={modal} close={this.handleCloseModal} data={modalData} />
+          <Detail funs={funs} modal={modal} close={this.handleCloseModal} data={modalData} />
         </div>
       );
     }

@@ -88,19 +88,19 @@ export const getRouterData = (app) => {
     },
     // 样衣海选发布
     '/sample/fsfewe': {
-        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Fsfewe')),
     },
     // 样衣海选
     '/sample/werewre': {
-        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werewre')),
     },
     // 样衣海选决策
     '/sample/sdfdsfssdf': {
-        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Sdfdsfssdf')),
     },
     //样衣一审打分
-    '/sample/erwerwe': {
-        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+    '/judgeone/erwerwe': {
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Erwerwe')),
     },
     // '/daysgoods/wave-plan-manager': {
     //   component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),
