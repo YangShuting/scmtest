@@ -1,4 +1,4 @@
-import { getSampleData, removeRule, addRule, reqSample } from '../services/api';
+import { getSampleData, removeRule, addRule, reqSample, reqSampleAudit } from '../services/api';
 
 const namespace = 'sampleApply';
 
@@ -22,6 +22,16 @@ export default {
         type: 'save',
         payload: response,
       });
+    },
+    *audit({ payload }, { call, put}) {        
+        const response = yield call(reqSampleAudit, payload);
+        yield put({
+            type: 'fetch',
+            payload: {
+                start: 0,
+                length: 9,
+            },
+        });
     },
     *itemHandle({ payload }, { call, put }) {
       const response = yield call(reqSample, payload);

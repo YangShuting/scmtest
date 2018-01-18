@@ -186,6 +186,26 @@ export async function getSampleData(parames) {
   });
 }
 
+/**
+ * 样衣审批
+ */
+export async function reqSampleAudit(parames) {
+    return request(`scm/Sample/Audit${parames.type}`, {
+        method: 'POST',
+        body: parames.data,
+      });
+}
+
+/**
+ * 样衣总分操作
+ */
+export async function getSampleScore(parames) {
+    const str = getQueryStr(parames);
+    return request(`scm/Sample/ScoreImageList${str}`, {
+      method: 'GET',
+    });
+  }
+  
 
 /**
  * 样衣需求操作

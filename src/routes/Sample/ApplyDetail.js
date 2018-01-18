@@ -1,42 +1,205 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Modal, Card, Badge, Table, Divider } from 'antd';
+import { Modal, Card, Badge, Table, Divider, Row, Col, Layout, Input } from 'antd';
 import DescriptionList from '../../components/DescriptionList';
+import { sortable } from 'react-sortable';
+import { LazyLoadImg } from '../../utils/ajust';
+import style from './style.less';
+const { TextArea } = Input;
 
 const { Description } = DescriptionList;
 import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge } from '../../utils/ajust';
+import { Button } from 'antd/lib/radio';
 
 @connect(({ sampleApply, loading }) => ({
-  item: sampleApply.Query,
+    item: sampleApply.Query,
 }))
 export default class DemandDetail extends PureComponent {
     close = () => {
-      dispatch({ type: 'sampleApply/closeQuery' });
+        dispatch({ type: 'sampleApply/closeQuery' });
     }
     render() {
-      return (
-        <Detail data={this.props.item.data} close={this.close} modal={this.props.item.modal} />
-      );
+        return (
+            <Detail data={this.props.item.data} close={this.close} modal={this.props.item.modal} />
+        );
     }
 }
 
+class Item extends React.Component {
+    render() {
+        return (
+            <div className={style.img}>
+                <LazyLoadImg {...this.props} />
+            </div>
+        )
+    }
+}
+
+var SortableItem = sortable(Item);
+
 export class Detail extends PureComponent {
-  render() {
-    const {
+    render() {
+        const {
       Id, sampleId, samplename, supplierId, supplierName, bandid, bandname, pcode, deptid,
-      deptname, dlid, dlname, pic, ismain, jyfs, editor, editdate, checker, checkdate, status,
-      flag, relflag, CompIsvisible, SupIsVisible, note, plid,
+            deptname, dlid, dlname, pic, ismain, jyfs, editor, editdate, checker, checkdate, status,
+            flag, relflag, CompIsvisible, SupIsVisible, note, plid, ImageIdPath1, ImageIdPath2, ImageIdPath3,
+            ImageId1, ImageId2, ImageId3
     } = this.props.data;
-    const { modal } = this.props;
-    return (
-      <Modal
-        title={null}
-        width="90%"
-        footer={null}
-        visible={modal}
-        onCancel={() => this.props.close()}
-      >
-        <Card bordered={false}>
+        let items = [ImageIdPath1, ImageIdPath2, ImageIdPath3];
+        const { modal } = this.props;
+        return (
+            <Modal
+                title="样衣资料"
+                footer={null}
+                width={980}
+                visible={modal}
+                onCancel={() => this.props.close()}
+            >
+
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                                sm={7}>
+                                样衣图片：
+                    </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {items.map((item, i) => {
+                            return (
+                                <SortableItem
+                                    key={i}
+                                    onSortItems={this.onSortItems}
+                                    items={items}
+                                    sortId={i}>
+                                    {/* {item} */}
+                                </SortableItem>
+                            );
+                        })}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                                sm={7}>
+                    </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        提示：拖动更换照片顺序，排在第一个的为主图
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        供应商编码：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {sampleId}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        供应商名称：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {samplename}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        波段号：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {dlname}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        品类：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {deptid}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        大类：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {dlid}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        供应商货号：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {dlname}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        主荐款：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {ismain}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        合作方式：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        {jyfs}
+                    </Col>
+                </Row>
+                <Row className={style.row}>
+                    <Col className={style.lable} xs={24}
+                        sm={7}>
+                        备注：
+              </Col>
+                    <Col xs={24}
+                        sm={12}
+                        md={10}>
+                        <TextArea />
+                    </Col>
+                </Row>
+                <Row className="xw-tx-center">
+                    <Button>取消</Button>
+                    <Button>合格</Button>
+                    <Button>不及格</Button>
+                </Row>
+
+            </Modal>
+        );
+    }
+}
+
+
+
+{/* <Card bordered={false}>
           <DescriptionList size="large" title="样衣申请明细" style={{ marginBottom: 32 }}>
             <Description term="样衣编码">{sampleId}</Description>
             <Description term="样衣名称">{samplename}</Description>
@@ -63,9 +226,4 @@ export class Detail extends PureComponent {
             <Description term="供应商是否可见">{SupIsVisible}</Description>
             <Description term="备注">{note}</Description>
           </DescriptionList>
-        </Card>
-      </Modal>
-    );
-  }
-}
-
+        </Card> */}

@@ -84,7 +84,23 @@ export const getRouterData = (app) => {
     },
     // 样衣照片审核
     '/sample/werwer': {
-      component: dynamicWrapper(app, ['sampleWerwer'], () => import('../routes/Sample/Werwer')),
+      component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+    },
+    // 样衣海选发布
+    '/sample/fsfewe': {
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+    },
+    // 样衣海选
+    '/sample/werewre': {
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+    },
+    // 样衣海选决策
+    '/sample/sdfdsfssdf': {
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
+    },
+    //样衣一审打分
+    '/sample/erwerwe': {
+        component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Werwer')),
     },
     // '/daysgoods/wave-plan-manager': {
     //   component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),

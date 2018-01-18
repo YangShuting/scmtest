@@ -14,23 +14,26 @@ const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,
 
 class Cards extends PureComponent {
     handleClick = () => {
-      this.props.handleData();
+        this.props.handleData();
     }
-
+    handleChange = (e)=>{
+        this.props.data.isCheck = e.target.checked;
+    }
     render() {
       const { data } = this.props;
       return (
-        <Col sm={24} md={8} xl={4} >
+        <Col sm={12} md={8} lg={6}>
           <Card
+            hoverable
             className={style.main}
                     // style={{ width: 300 }}
             cover={<LazyLoadImg onClick={this.handleClick} />}
           >
             <Meta
                         // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-              title={<Title data={data} />}
+                title={<Title data={data} />}
             />
-            <Checkbox className={style.chosen} />
+            <Checkbox onChange={this.handleChange} className={style.chosen} />
           </Card>
         </Col>
       );
@@ -41,12 +44,12 @@ const Title = props =>
   (
     <Row className="info">
       <Col xs={24}>
-        <span className={style.left}>编号：{props.data.Id}</span>
-        <span className={style.right}>状态：{getJudge(props.data.status)}</span>
+        <span className={style.left}>编号:{props.data.Id}</span>
+        <span className={style.right}>状态:{getJudge(props.data.status)}</span>
       </Col>
-      <Col xs={24}>
+      {/* <Col xs={24}>
         <span className={style.right}>总得分：123</span>
-      </Col>
+      </Col> */}
     </Row>
   );
 
@@ -69,15 +72,15 @@ export default class InfiniteListExample extends React.Component {
       });
     }
     handleInfiniteOnLoad = () => {
-      const data = this.state.data;
-      this.setState({
-        loading: true,
-      });
+      const data = this.props.data;
+    //   this.setState({
+    //     loading: true,
+    //   });
       if (data.length > 100) {
         message.warning('Infinite List loaded all');
         this.setState({
           hasMore: false,
-          loading: false,
+        //   loading: false,
         });
       }
       // this.getData((res) => {
@@ -89,8 +92,8 @@ export default class InfiniteListExample extends React.Component {
       // });
     }
     render() {
-      const { loading, hasMore, modal, modalData } = this.state;
-      const { data, funs } = this.props;
+      const { hasMore, modal, modalData } = this.state;
+      const { data, funs, loading } = this.props;
       // const data = [1,2,3,4,5,6,7,8,9,10,11,12,14,15,16]
       return (
         <div className="demo-infinite-container">
