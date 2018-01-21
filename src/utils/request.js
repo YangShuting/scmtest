@@ -36,6 +36,21 @@ function checkStatus(response) {
   // throw error;
 }
 
+function checkPostStatus(response) {
+    if (response.status >= 200 && response.status < 300) {
+        notification.success({
+            message: `请求成功`,
+            // description: errortext,
+          });
+        return response;
+    }
+    const errortext = codeMessage[response.status] || response.statusText;
+    notification.error({
+      message: `请求错误 ${response.status}: ${response.url}`,
+      description: errortext,
+    });
+}
+
 function getMenuPid() {
   const userMenu = window.__tmpMenu;
   if (!userMenu) {
@@ -56,7 +71,7 @@ function checkMenuUrl(userMenu, paths, index = 0) {
   userMenu.forEach((element) => {
     if (element.path === paths[index]) {
       if (paths.length === index + 1) {
-        window.__currentMenu = element.PId;
+        window.__currentMenu = element.Id;
       } else if (element.children) {
         checkMenuUrl(element.children, paths, index + 1);
       }
@@ -92,14 +107,23 @@ export default function request(url, options) {
     };
     console.log(newOptions.body);
     newOptions.body = JSON.stringify(newOptions.body);
+    return fetch(realUrl, newOptions)
+        .then(checkPostStatus)
+        .then((response) => {
+        if (newOptions.method === 'DELETE' || response.status === 204) {
+            return response.text();
+        }
+        return response.json();
+        });
   }
-
   return fetch(realUrl, newOptions)
-    .then(checkStatus)
-    .then((response) => {
-      if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
-      }
-      return response.json();
-    });
+        .then(checkStatus)
+        .then((response) => {
+        if (newOptions.method === 'DELETE' || response.status === 204) {
+            return response.text();
+        }
+        return response.json();
+        });
+  
+  
 }

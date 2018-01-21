@@ -17,6 +17,12 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
+        if(!payload){
+            payload =  {
+                start: 0,
+                length: 9,
+            }
+        }
       const response = yield call(getWaveBandData, payload);
       yield put({
         type: 'save',

@@ -175,6 +175,25 @@ export async function reqWaveBand(parames) {
   });
 }
 
+/**
+ * 获取样衣海选列表
+ */
+export async function getWerewre(parames) {
+    const str = getQueryStr(parames);
+    return request(`scm/FristAudition/ImageList${str}`, {
+      method: 'GET',
+    });
+}
+
+/**
+ * like or dislike
+ */
+export async function reqWerewre(parames) {
+    return request(`scm/FristAudition/${parames.type}`, {
+        method: 'POST',
+        body: parames.data,
+      });
+}
 
 /**
  * 样衣申请操作
@@ -204,8 +223,17 @@ export async function getSampleScore(parames) {
     return request(`scm/Sample/ScoreImageList${str}`, {
       method: 'GET',
     });
-  }
-  
+}
+
+/**
+ * 海选发布
+ */
+export async function reqSamplePublish(parames) {
+    return request(`scm/Sample/Publish`, {
+        method: 'POST',
+        body: parames,
+      });
+}
 
 /**
  * 样衣需求操作

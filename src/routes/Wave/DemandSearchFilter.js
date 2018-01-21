@@ -187,7 +187,7 @@ export function renderAdvancedForm() {
                                 width: '100%',
                             }}
               >
-                {realCategory.map(item => <Option value={item.categoryid}>{item.categoryname}</Option>)}
+                {realCategory.map(item => <Option key={item.categoryid} value={item.categoryid}>{item.categoryname}</Option>)}
               </Select>
                         )}
           </FormItem>

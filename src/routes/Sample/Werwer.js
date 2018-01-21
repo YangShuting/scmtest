@@ -18,9 +18,10 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
-@connect(({ sampleApply, loading, sysparames }) => ({
+@connect(({ sampleApply, loading, user, sysparames }) => ({
     sampleApply,
     sysparames,
+    user,
     defaultType: sampleApply.defaultType,
     loading: loading.models.sampleApply,
 }))
@@ -110,7 +111,7 @@ export default class Demand extends PureComponent {
         let ids = [];
         for (let index = 0; index < list.length; index++) {
             const element = list[index];
-            if (element.isCheck) {
+            if (element.checked) {
                 ids.push(element.Id);
             }
         }
@@ -126,6 +127,7 @@ export default class Demand extends PureComponent {
             type: 'sampleApply/audit',
             payload: payload,
         });
+
     }
     handleAdd = () => {
         this.props.dispatch({
@@ -139,6 +141,7 @@ export default class Demand extends PureComponent {
         this.setState({
             modalVisible: false,
         });
+        this.handleModalVisible(false)
     }
     hanldeDeleteData = item => () => {
         confirm({
@@ -170,28 +173,35 @@ export default class Demand extends PureComponent {
             payload: item,
         });
     }
-    AuditYes = item => () => {
+    handleAudit = item => {
         this.props.dispatch({
-            type: 'sampleApply/AuditYes',
+            type: 'sampleApply/setAudit',
             payload: item,
         });
     }
-    AuditNo = item => () => {
+    handleChange = (e)=>{
+        const Check = e.target.checked;
         this.props.dispatch({
-            type: 'sampleApply/AuditNo',
+            type: 'sampleApply/allCheck',
+            payload: Check,
+        });
+    }
+    itemCheck = item => {
+        this.props.dispatch({
+            type: 'sampleApply/setItemCheck',
             payload: item,
         });
     }
-
     render() {
-        const { sampleApply: { data: { list } }, loading } = this.props;
+        const { sampleApply: { data: { list } }, user, loading } = this.props;
         const { selectedRows, modalVisible, addInputValue, queryVisible, editItem } = this.state;
         const funs = {
             Create: this.handleAdd,
             Delete: this.hanldeDeleteData,
             Edit: this.hanldeEditData,
             Query: this.queryData,
-            Audit: this.handleGroupSubmit,
+            Check:this.itemCheck,
+            Audit: this.handleAudit,
         };
 
         return (
@@ -202,7 +212,7 @@ export default class Demand extends PureComponent {
                             {this.renderForm()}
                         </div>
                         <div className={styles.tableListOperator}>
-                            <Checkbox >全选</Checkbox>
+                            <Checkbox onChange={this.handleChange} >全选</Checkbox>
                             <Button onClick={() => this.handleModalVisible(true)} type="primary" >
                                 批量合格
                             </Button>
@@ -210,7 +220,7 @@ export default class Demand extends PureComponent {
                                 批量不合格
                             </Button>
                         </div>
-                        <InfiniteScroller funs={funs} data={list} loading={loading} />
+                        <InfiniteScroller user={user} funs={funs} data={list} loading={loading} />
                     </div>
                 </Card>
                 <Modal

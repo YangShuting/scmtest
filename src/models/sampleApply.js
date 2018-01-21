@@ -1,4 +1,4 @@
-import { getSampleData, removeRule, addRule, reqSample, reqSampleAudit } from '../services/api';
+import { getSampleData, removeRule, addRule, reqSample, reqSampleAudit, reqSamplePublish } from '../services/api';
 
 const namespace = 'sampleApply';
 
@@ -13,10 +13,17 @@ export default {
     defaultType: `${namespace}/fetch`,
     Edit: { modal: false, data: {} },
     Query: { modal: false, data: {} },
+    Audit: { modal: false, data: {} },
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
+        if(!payload){
+            payload =  {
+                start: 0,
+                length: 9,
+            }
+        }
       const response = yield call(getSampleData, payload);
       yield put({
         type: 'save',
@@ -25,12 +32,10 @@ export default {
     },
     *audit({ payload }, { call, put}) {        
         const response = yield call(reqSampleAudit, payload);
+        //关闭弹框
         yield put({
-            type: 'fetch',
-            payload: {
-                start: 0,
-                length: 9,
-            },
+            type: 'setAudit',
+            payload: { modal: false, data: {} }
         });
     },
     *itemHandle({ payload }, { call, put }) {
@@ -60,8 +65,15 @@ export default {
           break;
       }
     },
+    *publish({ payload }, { call, put}) {
+        const response = yield call(reqSamplePublish, payload);
+        yield put({
+            type: 'fetch',
+          });
+    },
   },
 
+  
   reducers: {
     closeEdit(state, action) {
       return {
@@ -87,6 +99,33 @@ export default {
         Query: { modal: true, data: action.payload },
       };
     },
+    allCheck(state, action) {
+        let { data } = state
+        let { list } = data
+        list.forEach(element => {
+            element.checked = action.payload
+        });
+        console.log(list)
+        return {
+          ...state,
+          data,
+        };
+    },
+    setItemCheck(state, action) {
+        let { data } = state
+        let { list } = data
+        list[action.payload.index].checked = !list[action.payload.index].checked
+        return {
+          ...state,
+          data,
+        };
+    },
+    setAudit(state, action) {
+        return {
+          ...state,
+          Audit: { modal: action.payload.modal, data: action.payload.data },
+        };
+      },
     save(state, action) {
       return {
         ...state,

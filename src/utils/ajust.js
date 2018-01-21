@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Select } from 'antd';
 import defaultImage from '../assets/defaultimg.jpg';
 import LazyLoad from 'react-lazyload';
+import Ellipsis from '../components/Ellipsis';
 
 const { Option } = Select;
 
@@ -299,6 +300,13 @@ export function getDateFromTime(time) {
   return '';
 }
 
+/**
+ * 备注长度控制
+ */
+export function getRemarkRender(value) {
+   return <Ellipsis length={10} tooltip>{value}</Ellipsis>
+}
+
 export function getMomentFromStr(time) {
   if (typeof time === 'string') {
     return moment(handleGetTime(time));
@@ -322,3 +330,8 @@ export const LazyLoadImg = props =>
       <img {...props} src={props.src ? props.src : defaultImage} />
     </LazyLoad>
   );
+
+/**
+ * 是否
+ */
+export const ifNotJudge = (item) => (item == 1 ? '是' : '否');

@@ -6,7 +6,7 @@
 .main {
     padding: 10px;
     margin: 10px;
-    :global{
+    :global {
         img {
             cursor: pointer;
         }
@@ -15,8 +15,62 @@
         }
     }
 }
+.main2 {
+    // padding: 0 10px;
+    margin: 10px;
+    :global {
+        .ant-card-hoverable {
+            cursor: none;
+        }
+        .ant-card-actions {
+            background: none;
+        }
+        .ant-card-body {
+            padding: 20px 0 0;
+        }
+    }
+}
+.PicWall {
+    :global {
+        .ant-modal-content{
+            background: transparent;
+            box-shadow: none;
+        }
+        .ant-modal-close-x {
+            .butfont;
+            line-height: 40px;
+        }
+    }
+}
+.butfont {
+    font-size: 40px;
+    color: #eee;
+    line-height: 600px;
+    cursor: pointer;
+    &:hover{
+        color: #fff;
+    }
+}
+.butleft {
+    float: left;
+    .butfont;
+}
+.butright {
+    float: right;
+    .butfont;
+}
+.center {
+    float: left;
+    height: 600px;
+    text-align: center;
+}
 .lable {
     text-align: right;
+}
+.uploadBtn {
+    font-size: 40px;
+    width: 60px;
+    height: 60px;
 }
 .img {
     margin: 0 10px 0 0;
@@ -47,6 +101,7 @@
 }
 .left{
     float: left;
+    margin-right: 15px;
     .font-size;
 }
 .right{

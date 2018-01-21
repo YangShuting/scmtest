@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import moment from 'moment';
 import { Table, Alert, Badge, Divider } from 'antd';
 import styles from './index.less';
-import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge } from '../../utils/ajust';
+import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge, getRemarkRender } from '../../utils/ajust';
 import { AForm } from '../../routes/Sample/ApplyForm';
 
 const statusMap = ['default', 'processing', 'success', 'error'];
@@ -55,7 +55,7 @@ class StandardTable extends PureComponent {
       const { modal, item } = this.state;
 
       const columns = getColumns([
-        { dataIndex: 'id', title: '系统ID' },
+        // { dataIndex: 'id', title: '系统ID' },
         { dataIndex: 'Year', title: '年份' },
         { dataIndex: 'bandid', title: '波段号' },
         { dataIndex: 'bandname', title: '波段名称' },
@@ -75,7 +75,7 @@ class StandardTable extends PureComponent {
         { dataIndex: 'checkdate', width: 200, title: '审核时间', render: handleGetTime },
         { dataIndex: 'operatorName', title: '业务员' },
         { dataIndex: 'status', title: '状态', render: getJudge },
-        { dataIndex: 'remarks', title: '备注' },
+        { dataIndex: 'remarks', title: '备注', render:getRemarkRender },
         {
           title: '操作',
           dataIndex: 'operation',

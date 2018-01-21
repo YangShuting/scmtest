@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Modal, Card, Badge, Table, Divider, Row, Col, Layout, Input } from 'antd';
+import { Modal, Card, Badge, Table, Button, Divider, Row, Col, Layout, Input } from 'antd';
 import DescriptionList from '../../components/DescriptionList';
 import { sortable } from 'react-sortable';
 import { LazyLoadImg } from '../../utils/ajust';
@@ -8,8 +8,8 @@ import style from './style.less';
 const { TextArea } = Input;
 
 const { Description } = DescriptionList;
-import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge } from '../../utils/ajust';
-import { Button } from 'antd/lib/radio';
+import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge, ifNotJudge } from '../../utils/ajust';
+// import { Button } from 'antd/lib/radio';
 
 @connect(({ sampleApply, loading }) => ({
     item: sampleApply.Query,
@@ -37,23 +37,79 @@ class Item extends React.Component {
 
 var SortableItem = sortable(Item);
 
+
+@connect(({ sampleApply, loading }) => ({
+    item: sampleApply.Audit,
+}))
 export class Detail extends PureComponent {
+    state = {
+        mask:undefined,
+    }
+    handleNotOk = () =>{
+        const { Id } = this.props.item.data;
+        const { mask } = this.state;
+        const payload = {
+            data: {
+                ids:Id,
+                mask
+            },
+            type: 'No'
+        };
+        this.props.dispatch({
+            type:'sampleApply/audit',
+            payload
+        })
+    }
+    handleOk = () =>{
+        const { Id } = this.props.item.data;
+        const { mask } = this.state;
+        const payload = {
+            data: {
+                ids:Id,
+                mask
+            },
+            type: 'Yes'
+        };
+        this.props.dispatch({
+            type:'sampleApply/audit',
+            payload
+        })
+    }
+    maskChange = (e)=>{
+        this.setState({
+            mask:e.target.value
+        })
+    }
+    close = ()=>{
+        this.props.dispatch({
+            type:'sampleApply/setAudit',
+            payload:{
+                modal:false,
+                data:{},
+            }
+        })
+    }
     render() {
+        console.log(this.props)
         const {
-      Id, sampleId, samplename, supplierId, supplierName, bandid, bandname, pcode, deptid,
-            deptname, dlid, dlname, pic, ismain, jyfs, editor, editdate, checker, checkdate, status,
-            flag, relflag, CompIsvisible, SupIsVisible, note, plid, ImageIdPath1, ImageIdPath2, ImageIdPath3,
-            ImageId1, ImageId2, ImageId3
-    } = this.props.data;
+                Id, sampleId, samplename, supplierId, supplierName, bandid, bandname, pcode, deptid,
+                deptname, dlid, dlname, pic, ismain, jyfs, editor, editdate, checker, checkdate, status,
+                flag, relflag, CompIsvisible, SupIsVisible, note, plid, ImageIdPath1, ImageIdPath2, ImageIdPath3,
+                ImageId1, ImageId2, ImageId3
+    } = this.props.item.data;
         let items = [ImageIdPath1, ImageIdPath2, ImageIdPath3];
-        const { modal } = this.props;
+        const { modal } = this.props.item;
+        const { mask } = this.state;
+        // const { name, userid } = currentUser;
+
+        // console.log(user)
         return (
             <Modal
                 title="样衣资料"
                 footer={null}
                 width={980}
                 visible={modal}
-                onCancel={() => this.props.close()}
+                onCancel={() => this.close()}
             >
 
                 <Row className={style.row}>
@@ -95,7 +151,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {sampleId}
+                        {supplierId}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -106,7 +162,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {samplename}
+                        {supplierName}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -117,7 +173,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {dlname}
+                        {bandname}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -128,7 +184,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {deptid}
+                        {plid}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -150,7 +206,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {dlname}
+                        {pcode}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -161,7 +217,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {ismain}
+                        {ifNotJudge(ismain)}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -172,7 +228,7 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        {jyfs}
+                        {jyfs==1?'试销':'其他'}
                     </Col>
                 </Row>
                 <Row className={style.row}>
@@ -183,13 +239,13 @@ export class Detail extends PureComponent {
                     <Col xs={24}
                         sm={12}
                         md={10}>
-                        <TextArea />
+                        <TextArea value = {mask?mask:note} onChange={this.maskChange}/>
                     </Col>
                 </Row>
                 <Row className="xw-tx-center">
-                    <Button onClick={this.handleCancel}>取消</Button>
-                    <Button onClick={this.handleCancel}>合格</Button>
-                    <Button onClick={this.handleCancel}>不及格</Button>
+                    <Button style={{marginRight:24}} onClick={() => this.close()}>取消</Button>
+                    <Button style={{marginRight:24}} type="primary" onClick={this.handleOk}>合格</Button>
+                    <Button onClick={this.handleNotOk}>不及格</Button>
                 </Row>
 
             </Modal>

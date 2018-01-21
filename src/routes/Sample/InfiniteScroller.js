@@ -1,7 +1,7 @@
 import { List, message, Avatar, Spin, Card, Icon, Checkbox, Row, Col } from 'antd';
 
 const { Meta } = Card;
-import reqwest from 'reqwest';
+// import reqwest from 'reqwest';
 import fetch from 'dva/fetch';
 import React, { PureComponent } from 'react';
 import style from './style.less';
@@ -17,7 +17,7 @@ class Cards extends PureComponent {
         this.props.handleData();
     }
     handleChange = (e)=>{
-        this.props.data.isCheck = e.target.checked;
+        this.props.handleCheck(e.target.value)
     }
     render() {
       const { data } = this.props;
@@ -33,7 +33,7 @@ class Cards extends PureComponent {
                         // avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
                 title={<Title data={data} />}
             />
-            <Checkbox onChange={this.handleChange} className={style.chosen} />
+            <Checkbox onChange={this.handleChange} checked={data.checked}  className={style.chosen}/>
           </Card>
         </Col>
       );
@@ -53,7 +53,7 @@ const Title = props =>
     </Row>
   );
 
-export default class InfiniteListExample extends React.Component {
+export default class InfiniteList extends React.Component {
     state = {
       loading: false,
       hasMore: true,
@@ -61,16 +61,21 @@ export default class InfiniteListExample extends React.Component {
       modalData: {},
     }
     handleOpenModal = item => () => {
-      this.setState({
-        modal: true,
-        modalData: item,
-      });
+      this.props.funs.Audit({
+        modal:true,data:item
+      })
+    }
+    handleCheck = (item,index) => (e) => {
+      this.props.funs.Check({
+        item,index
+      })
     }
     handleCloseModal = () => {
       this.setState({
         modal: false,
       });
     }
+    
     handleInfiniteOnLoad = () => {
       const data = this.props.data;
     //   this.setState({
@@ -93,7 +98,7 @@ export default class InfiniteListExample extends React.Component {
     }
     render() {
       const { hasMore, modal, modalData } = this.state;
-      const { data, funs, loading } = this.props;
+      const { data, funs, loading, user } = this.props;
       // const data = [1,2,3,4,5,6,7,8,9,10,11,12,14,15,16]
       return (
         <div className="demo-infinite-container">
@@ -110,12 +115,12 @@ export default class InfiniteListExample extends React.Component {
                         xl: 48,
                         }}
             >
-              {data.map((item, index) => <Cards handleData={this.handleOpenModal(item)} key={index} data={item} />)}
+              {data.map((item, index) => <Cards handleCheck={this.handleCheck(item,index)} handleData={this.handleOpenModal(item)} key={index} data={item} />)}
             </Row>
 
             {loading && hasMore && <Spin className="demo-loading" />}
           </InfiniteScroll>
-          <Detail funs={funs} modal={modal} close={this.handleCloseModal} data={modalData} />
+          <Detail user={user} funs={funs} modal={modal} close={this.handleCloseModal} data={modalData} />
         </div>
       );
     }
