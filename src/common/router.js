@@ -121,6 +121,9 @@ export const getRouterData = (app) => {
         '/judgeone/erwerwe': {
             component: dynamicWrapper(app, ['sampleApply'], () => import('../routes/Sample/Erwerwe')),
         },
+        '/sample/spend-analysis': {
+            component: dynamicWrapper(app, ['sampleApply','sysparames'], () => import('../routes/Sample/spendanalysis/SpendAnalysis')),
+        },
         // '/daysgoods/wave-plan-manager': {
         //   component: dynamicWrapper(app, ['rule'], () => import('../routes/DaysGoods/WavePlanManager')),
         // },
