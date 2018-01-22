@@ -181,6 +181,24 @@ export default class Demand extends PureComponent {
         },
       });
     }
+    hanldeCheckData = item => () => {
+      confirm({
+        title: '请确认',
+        content: `波段号为${item.bandid}, 波段名称为${item.bandname}会审核通过！`,
+        onOk: () => {
+          this.props.dispatch({
+            type: 'waveDemand/itemHandle',
+            payload: {
+              type: 'Check',
+              data: { id: item.id },
+            },
+          });
+        },
+        onCancel() {
+          console.log('Cancel');
+        },
+      });
+    }
     hanldeEditData = item => () => {
       this.props.dispatch({
         type: 'waveDemand/setEditData',
@@ -295,6 +313,7 @@ export default class Demand extends PureComponent {
         Delete: this.hanldeDeleteData,
         Edit: this.hanldeEditData,
         Query: this.queryData,
+        Check: this.hanldeCheckData,
         Dispatch: this.props.dispatch,
       };
 
@@ -335,6 +354,7 @@ export default class Demand extends PureComponent {
               <WavePlanTable
                 funs={funs}
                             // selectedRows={selectedRows}
+                type='demand'
                 loading={loading}
                 data={data}
                 user={user}

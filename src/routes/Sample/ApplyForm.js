@@ -18,6 +18,10 @@ const { TextArea } = Input;
 
 
 class ApplyForm extends PureComponent {
+    state = {
+        fgText:undefined,
+        plText:undefined,
+    }
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
@@ -31,12 +35,18 @@ class ApplyForm extends PureComponent {
         });
     }
     componentWillReceiveProps(nextprops) {
-
+        if ( this.props.item && nextprops.item != this.props.item) {
+            const { fgText, plText, xlText } = nextprops.item;
+            this.setState({
+                plText: plText,
+                fgText: fgText,
+            });
+        }
     }
     render() {
         const { submitting } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
-
+        const { fgText, plText } = this.state
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -136,25 +146,27 @@ class ApplyForm extends PureComponent {
                         {...formItemLayout}
                         label="品类"
                     >
-                        {getFieldDecorator('deptid', {
+                        <Input value={plText} disabled placeholder="品类" />
+                        {/* {getFieldDecorator('deptid', {
                             rules: [{
                                 required: true, message: '请输入品类',
                             }],
                         })(
-                            <Input disabled placeholder="品类" />
-                            )}
+                           
+                            )} */}
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        label="大类"
+                        label="风格"
                     >
-                        {getFieldDecorator('dlid', {
+                        <Input value={fgText} disabled placeholder="风格" />
+                        {/* {getFieldDecorator('dlid', {
                             rules: [{
                                 required: true, message: '请输入大类',
                             }],
                         })(
-                            <Input placeholder="大类" />
-                            )}
+                            <Input disabled placeholder="大类" />
+                            )} */}
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -214,7 +226,7 @@ export const AForm = Form.create({
         let {
       Id, sampleId, samplename, supplierId, supplierName, bandid, bandname, pcode, deptid,
             deptname, dlid, dlname, pic, ismain, jyfs, editor, editdate, checker, checkdate, status,
-            flag, relflag, CompIsvisible, SupIsVisible, note, plid,
+            flag, relflag, CompIsvisible, SupIsVisible, note, plid,fgText,plText,xlText
     } = props.item;
         const { name, userid } = props.currentUser;
         editdate = getMomentFromStr(editdate);

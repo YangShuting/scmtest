@@ -33,15 +33,15 @@ class AdvancedForm extends PureComponent {
         });
     }
     componentWillReceiveProps(nextprops) {
-        const { fgid, plid, xlid } = nextprops.item.data;
+        const { fgText, plText, xlText } = nextprops.item.data;
         if (nextprops.item.data != this.props.item.data) {
             // this.state.fgid = fgid;
             // this.state.plid = plid;
             // this.state.xlid = xlid;
             this.setState({
-                xlbtn: xlid,
-                pl: plid,
-                fg: fgid,
+                xlbtn: xlText,
+                pl: plText,
+                fg: fgText,
             });
         }
     }
