@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import {
     Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
@@ -278,6 +278,9 @@ export default connect(({ sampleApply, sysparames, user, loading }) => ({
  * 文件上传
  */
 class FileuploadWithDrag extends PureComponent {
+    state = {
+        items:[1,2],
+    }
     onChange(info) {
         console.log(info)
         if (info.file.status !== 'uploading') {
@@ -289,6 +292,12 @@ class FileuploadWithDrag extends PureComponent {
             message.error(`${info.file.name} file upload failed.`);
         }
     }
+    onSortItems = (items) => {
+        this.setState({
+          items: items
+        });
+      }
+    
     render() {
         const props = {
             name: 'file',
@@ -299,11 +308,26 @@ class FileuploadWithDrag extends PureComponent {
             },
 
         };
+        const { items } = this.state;
         return (
-            <Upload onChange={this.onChange} {...props}>
-                <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
-                </Button>
-            </Upload>
+            <div className="clearfix">
+                {items.map((item, i) => {
+                    return (
+                        <SortableItem
+                            key={i}
+                            onSortItems={this.onSortItems}
+                            items={items}
+                            sortId={i}>
+                        </SortableItem>
+                    );
+                })}
+                {items.length>2?'':
+                    <Upload onChange={this.onChange} {...props}>
+                        <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
+                        </Button>
+                    </Upload>
+                }
+            </div>
         )
     }
 
