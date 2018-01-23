@@ -14,7 +14,7 @@ export default class DemandDetail extends PureComponent {
     const {
       id, Year, bandid, bandname, fgid, plid, xlid, supplyqty, kindqty, uploaddate,
       maildate, approvaldate, indate, Enclosure, editor, editdate, checker, checkdate,
-      operatorName, status, remarks,
+      operatorName, status, remarks,fgText,plText,xlText
     } = this.props.item.data;
     return (
       <Modal
@@ -30,9 +30,9 @@ export default class DemandDetail extends PureComponent {
             <Description term="年份">{Year}</Description>
             <Description term="波段号">{bandid}</Description>
             <Description term="波段名称">{bandname}</Description>
-            <Description term="风格">{fgid}</Description>
-            <Description term="品类">{plid}</Description>
-            <Description term="小类">{xlid}</Description>
+            <Description term="风格">{fgText}</Description>
+            <Description term="品类">{plText}</Description>
+            <Description term="小类">{xlText}</Description>
             <Description term="上货款数">{supplyqty}</Description>
             <Description term="提供样版数">{kindqty}</Description>
             <Description term="上传图片截止时间">{getDateFromTime(uploaddate)}</Description>

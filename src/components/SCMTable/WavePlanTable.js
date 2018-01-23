@@ -59,9 +59,9 @@ class StandardTable extends PureComponent {
         { dataIndex: 'Year', title: '年份' },
         { dataIndex: 'bandid', title: '波段号' },
         { dataIndex: 'bandname', title: '波段名称' },
-        { dataIndex: 'fgid', title: '风格' },
-        { dataIndex: 'plid', title: '品类' },
-        { dataIndex: 'xlid', title: '小类' },
+        { dataIndex: 'fgText', title: '风格' },
+        { dataIndex: 'plText', title: '品类' },
+        { dataIndex: 'xlText', title: '小类' },
         { dataIndex: 'supplyqty', title: '上货款数' },
         { dataIndex: 'kindqty', title: '提供样版数' },
         { dataIndex: 'uploaddate', title: '上传图片截止时间', render: getDateFromTime },
@@ -89,7 +89,7 @@ class StandardTable extends PureComponent {
                 </a>
               );
             } else {
-              return getOperationHandle(value, row, this.props.funs, this.openAFrom);
+              return getOperationHandle(value, row, this.props.funs, this.openAFrom, this.props.type);
               // return (
               // 	<span>
               // 		{value.map((element, index) => {
@@ -139,28 +139,49 @@ class StandardTable extends PureComponent {
 export default StandardTable;
 
 
-const getOperationHandle = (value, row, fns, openform) => {
-  // let divi = 0;
+const getOperationHandle = (value, row, fns, openform, type) => {
   const sum = value.filter(element => element.action != 'Save' && element.action != 'Create' && fns[element.action]).length;
-  return (
-    <Fragment>
-      {value.map((element, index) => {
-                if (element.action != 'Save' && element.action != 'Create' && fns[element.action]) {
-                    // divi++;
-                    return (
-                      <Fragment key={index}>
-                        <a onClick={fns[element.action](row)}>
-                          {element.title}
-                        </a>
-                        {/* {divi < sum ? : ''} */}
-                        <Divider type="vertical" />
-                      </Fragment>
-                    );
-                }
-            })}
-      <a onClick={openform(row)}>
-                样衣上传
-      </a>
-    </Fragment>
-  );
+  if(type === 'demand'){
+    let divi = 0;
+    return (
+      <Fragment>
+        {value.map((element, index) => {
+                  if (element.action != 'Save' && element.action != 'Create' && fns[element.action]) {
+                      divi++;
+                      return (
+                        <Fragment key={index}>
+                          <a onClick={fns[element.action](row)}>
+                            {element.title}
+                          </a>
+                          {divi < sum ? <Divider type="vertical" /> : ''}
+                        </Fragment>
+                      );
+                  }
+              })}
+      </Fragment>
+    );
+  }else {
+    return (
+      <Fragment>
+        {value.map((element, index) => {
+                  if (element.action != 'Save' && element.action != 'Create' && fns[element.action]) {
+                      // divi++;
+                      return (
+                        <Fragment key={index}>
+                          <a onClick={fns[element.action](row)}>
+                            {element.title}
+                          </a>
+                          {/* {divi < sum ? : ''} */}
+                          <Divider type="vertical" />
+                        </Fragment>
+                      );
+                  }
+              })}
+        <a onClick={openform(row)}>
+                  样衣上传
+        </a>
+      </Fragment>
+    );
+  }
+  
 };
