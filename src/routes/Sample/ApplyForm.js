@@ -81,24 +81,6 @@ class ApplyForm extends PureComponent {
                 sm: { span: 10, offset: 7 },
             },
         };
-        const props = {
-            name: 'file',
-            action: '../FileUpload/Upload',
-            headers: {
-                authorization: 'authorization-text',
-            },
-            onChange(info) {
-                if (info.file.status !== 'uploading') {
-                    console.log(info.file, info.fileList);
-                }
-                if (info.file.status === 'done') {
-                    message.success(`${info.file.name} file uploaded successfully`);
-                } else if (info.file.status === 'error') {
-                    message.error(`${info.file.name} file upload failed.`);
-                }
-            },
-        };
-
         return (
             <Modal
                 title="编辑样衣申请"
@@ -298,21 +280,22 @@ class FileuploadWithDrag extends PureComponent {
         items:[1,2],
         fileList:[],
     }
-    beforeUpload = () => {
-        const { fileList } = this.state;
+    beforeUpload = (file, fileList) => {
         if(fileList.length>2){
             message.error(`文件已经超过${fileList.length}个了，请先删除后添加。`);
+            return false;
+        }else{
+            return true;
         }
-        return fileList.length<2
     }
     onChange = (info)=> {
         let { fileList } = this.state;
         this.setState({
-            fileList:[].concat(info.fileList),
+            fileList:info.fileList,
         });
-        if (info.file.status !== 'uploading') {
-
-        }
+        // if (info.file.status == 'uploading') {
+            
+        // }
         if (info.file.status === 'done') {
             this.props.handleFileList([].concat(fileList));
             message.success(`${info.file.name} file uploaded successfully`);
@@ -348,6 +331,7 @@ class FileuploadWithDrag extends PureComponent {
             action: '../FileUpload/Upload',
             onChange: this.onChange,
             fileList:fileList,
+            disabled:fileList.length==3,
             beforeUpload:this.beforeUpload,
             onRemove:this.onRemove,
             headers: {
@@ -386,7 +370,7 @@ class FileuploadWithDrag extends PureComponent {
                     );
                 })}
                 <Upload  {...props}>
-                    <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
+                    <Button disabled={fileList.length==3} className={styles.uploadBtn}  icon="plus" type="dashed"  >
                     </Button>
                 </Upload>
             </div>

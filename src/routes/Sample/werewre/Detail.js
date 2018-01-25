@@ -36,16 +36,55 @@ class Item extends React.Component {
 }
 
 class ItemUpload extends React.Component {
+
+    state = {
+        modal:false,
+    }
+    handleModal = (flag)=>()=>{
+        console.log(flag)
+        this.setState({
+            modal:flag,
+        });
+    }
     render() {
         const { item } = this.props;
+        const { modal } = this.state;
         let url = "";
+        let url2 = "";
         if (item.response&&item.response.files[0]) {
             url = item.response.files[0].thumbnailUrl1;
+            url2 = item.response.files[0].thumbnailUrl2;
         }
         return (
             <div className={style.img}>
-                <LazyLoadImg src={url} {...this.props} />
+                <LazyLoadImg onClick={this.handleModal(true)} src={url} {...this.props} />
+                <BigPic closefun={this.handleModal(false)}  modal={modal} url={url2} />
             </div>
+        )
+    }
+}
+
+
+class BigPic extends PureComponent{
+
+    render(){
+        const { modal,url } = this.props;
+
+        return (
+            <Modal
+                className={style.PicWall}
+                title={null}
+                footer={null}
+                width={500}
+                visible={modal}
+                onCancel={this.props.closefun}
+            >
+                <Row>
+                    <Col sm={20}  md={22}   className={style.center}>
+                        <LazyLoadImg src = {url}/>
+                    </Col>
+                </Row>
+            </Modal>
         )
     }
 }

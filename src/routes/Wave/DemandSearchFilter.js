@@ -21,7 +21,7 @@ export function handleFormReset() {
   const { form, dispatch, defaultType } = this.props;
   form.resetFields();
   this.setState({ formValues: {} });
-  dispatch({ type: defaultType, payload: {} });
+  dispatch({ type: defaultType});
 }
 
 export function toggleForm() {

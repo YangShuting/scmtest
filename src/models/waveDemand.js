@@ -36,10 +36,16 @@ export default {
           yield put({
             type: 'closeEdit',
           });
+          yield put({
+            type: 'fetch',
+          });
           break;
         case 'Create':
           yield put({
             type: 'closeEdit',
+          });
+          yield put({
+            type: 'fetch',
           });
           break;
         case 'Query':
