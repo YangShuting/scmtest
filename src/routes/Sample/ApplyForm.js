@@ -21,12 +21,19 @@ class ApplyForm extends PureComponent {
     state = {
         fgText:undefined,
         plText:undefined,
+        fileList:[],
     }
     handleSubmit = (e) => {
         e.preventDefault();
+        let { fileList } = this.state;
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                this.props.submit(values);
+                for (let index = 0; index < fileList.length; index++) {
+                    const element = fileList[index];
+                    values['ImageId'+(index+1)] = element.uid
+                }
+                console.log(values)
+                // this.props.submit(values);
                 // this.props.dispatch({
                 // 	type: 'form/submitRegularForm',
                 // 	payload: values,
@@ -43,10 +50,29 @@ class ApplyForm extends PureComponent {
             });
         }
     }
+    handleFileList = (fileList) => {
+        this.setState({
+            fileList:[].concat(fileList),
+        });
+    }
+    handleRemove = (file) =>{
+        let { fileList } = this.state;
+        console.log(file)
+        for (let index = 0; index < fileList.length; index++) {
+            const element = fileList[index];
+            if(element.uid == file.uid){
+                fileList.splice(index,1);
+                break;
+            }
+        }
+        this.setState({
+            fileList:[].concat(fileList),
+        });
+    }
     render() {
         const { submitting } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
-        const { fgText, plText } = this.state
+        const { fgText, plText, fileList } = this.state
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -102,9 +128,9 @@ class ApplyForm extends PureComponent {
                         label="样衣图片"
                         className="Avatar-lable"
                     >
-                        <PicturesWall />
-                        <FileuploadWithDrag />
-                        <span>建议尺寸：800*800PX，单张大小不超过2M，最多可上传3张</span>
+                        {/* <PicturesWall /> */}
+                        <FileuploadWithDrag fileList={fileList} handleRemove={this.handleRemove} handleFileList={this.handleFileList} />
+                        <span>建议尺寸：800*800PX，单张大小不超过2M，最多可上传3张，拖动图片，第一张为主图</span>
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -281,52 +307,65 @@ class FileuploadWithDrag extends PureComponent {
     state = {
         items:[1,2],
     }
-    onChange(info) {
-        console.log(info)
+    beforeUpload = () => {
+        const { fileList } = this.props;
+        if(fileList.length>2){
+            message.error(`文件已经超过${fileList.length}个了，请先删除后添加。`);
+        }
+        return fileList.length>2
+    }
+    onChange = (info)=> {
+        console.log(info.file)
+        let { fileList } = this.props;
+        this.props.handleFileList([].concat(fileList,[info.file]));
         if (info.file.status !== 'uploading') {
-            console.log(info.file, info.fileList);
+            // console.log(info.file, info.fileList);
         }
         if (info.file.status === 'done') {
+            // let { fileList } = this.props;
+            // this.props.handleFileList([].concat(fileList,[info.file]));
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
     }
-    onSortItems = (items) => {
-        this.setState({
-          items: items
-        });
-      }
-    
+    onSortItems = (fileList) => {
+        this.props.handleFileList(fileList);
+    }
+    onRemove = (file) => {
+        this.props.handleRemove(file);
+    }
     render() {
+        let { fileList } = this.props;
+        console.log(fileList);
         const props = {
             name: 'file',
-            action: '//jsonplaceholder.typicode.com/posts/',
+            action: '../FileUpload/Upload',
             multiple: true,
+            fileList:fileList,
+            beforeUpload:this.beforeUpload,
+            onRemove:this.onRemove,
             headers: {
                 authorization: 'authorization-text',
             },
 
         };
-        const { items } = this.state;
         return (
             <div className="clearfix">
-                {items.map((item, i) => {
+                {fileList.map((item, i) => {
                     return (
                         <SortableItem
                             key={i}
                             onSortItems={this.onSortItems}
-                            items={items}
+                            items={fileList}
                             sortId={i}>
                         </SortableItem>
                     );
                 })}
-                {items.length>2?'':
-                    <Upload onChange={this.onChange} {...props}>
-                        <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
-                        </Button>
-                    </Upload>
-                }
+                <Upload onChange={this.onChange} {...props}>
+                    <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
+                    </Button>
+                </Upload>
             </div>
         )
     }
@@ -334,58 +373,58 @@ class FileuploadWithDrag extends PureComponent {
 }
 
 
-class PicturesWall extends React.Component {
-    state = {
-      previewVisible: false,
-      previewImage: '',
-      fileList: [{
-        uid: -1,
-        name: 'xxx.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }],
-    };
+// class PicturesWall extends React.Component {
+//     state = {
+//       previewVisible: false,
+//       previewImage: '',
+//       fileList: [{
+//         uid: -1,
+//         name: 'xxx.png',
+//         status: 'done',
+//         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+//       }],
+//     };
 
-    handleCancel = () => this.setState({ previewVisible: false })
+//     handleCancel = () => this.setState({ previewVisible: false })
 
-    handlePreview = (file) => {
-      this.setState({
-        previewImage: file.url || file.thumbUrl,
-        previewVisible: true,
-      });
-    }
-    onDrag = (e) => {
-      console.log(e);
-    }
+//     handlePreview = (file) => {
+//       this.setState({
+//         previewImage: file.url || file.thumbUrl,
+//         previewVisible: true,
+//       });
+//     }
+//     onDrag = (e) => {
+//       console.log(e);
+//     }
 
-    handleChange = ({ fileList }) => {
-        console.log(fileList)
-        this.setState({ fileList })
-    }
+//     handleChange = ({ fileList }) => {
+//         console.log(fileList)
+//         this.setState({ fileList })
+//     }
 
-    render() {
-      const { previewVisible, previewImage, fileList } = this.state;
-      const uploadButton = (
-        <div>
-          <Icon type="plus" />
-          <div className="ant-upload-text">Upload</div>
-        </div>
-      );
-      return (
-        <div className="clearfix">
-          <Upload
-            action="../FileUpload/Upload"
-            listType="picture-card"
-            fileList={fileList}
-            onPreview={this.handlePreview}
-            onChange={this.handleChange}
-          >
-            {fileList.length >= 3 ? null : uploadButton}
-          </Upload>
-          <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-            <img alt="example" style={{ width: '100%' }} src={previewImage} />
-          </Modal>
-        </div>
-      );
-    }
-}
+//     render() {
+//       const { previewVisible, previewImage, fileList } = this.state;
+//       const uploadButton = (
+//         <div>
+//           <Icon type="plus" />
+//           <div className="ant-upload-text">Upload</div>
+//         </div>
+//       );
+//       return (
+//         <div className="clearfix">
+//           <Upload
+//             action="../FileUpload/Upload"
+//             listType="picture-card"
+//             fileList={fileList}
+//             onPreview={this.handlePreview}
+//             onChange={this.handleChange}
+//           >
+//             {fileList.length >= 3 ? null : uploadButton}
+//           </Upload>
+//           <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+//             <img alt="example" style={{ width: '100%' }} src={previewImage} />
+//           </Modal>
+//         </div>
+//       );
+//     }
+// }

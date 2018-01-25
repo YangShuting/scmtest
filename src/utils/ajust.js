@@ -335,3 +335,6 @@ export const LazyLoadImg = props =>
  * 是否
  */
 export const ifNotJudge = (item) => (item == 1 ? '是' : '否');
+
+
+export const renderImage = (url) => <LazyLoadImg style={{width:40,height:40}} src={url} />
