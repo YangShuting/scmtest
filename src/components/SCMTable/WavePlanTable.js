@@ -48,6 +48,9 @@ class StandardTable extends PureComponent {
           data: values,
         },
       });
+      this.setState({
+        modal: false,
+      });
     }
     render() {
       const { totalCallNo } = this.state;

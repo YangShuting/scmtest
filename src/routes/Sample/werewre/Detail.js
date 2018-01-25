@@ -35,7 +35,26 @@ class Item extends React.Component {
     }
 }
 
+class ItemUpload extends React.Component {
+    render() {
+        const { item } = this.props;
+        let url = "";
+        if (item.response&&item.response.files[0]) {
+            url = item.response.files[0].thumbnailUrl1;
+        }
+        return (
+            <div className={style.img}>
+                <LazyLoadImg src={url} {...this.props} />
+            </div>
+        )
+    }
+}
+
 export const SortableItem = sortable(Item);
+
+export const SortableItemUpload = sortable(ItemUpload);
+
+
 
 
 @connect(({ sampleApply, loading }) => ({

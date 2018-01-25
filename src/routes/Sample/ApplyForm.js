@@ -9,7 +9,7 @@ import { Upload, message } from 'antd';
 import { Checkbox } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import { getColumns, getWidthSum, handleGetTime, getDateFromTime, getJudge, getMomentFromStr } from '../../utils/ajust';
-import { SortableItem } from './werewre/Detail'
+import { SortableItemUpload } from './werewre/Detail'
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -30,10 +30,13 @@ class ApplyForm extends PureComponent {
             if (!err) {
                 for (let index = 0; index < fileList.length; index++) {
                     const element = fileList[index];
-                    values['ImageId'+(index+1)] = element.uid
+                    if (element.response) {
+                        const data = element.response.files[0];
+                        values['ImageId'+(index+1)] = data.guid;
+                    }
                 }
-                console.log(values)
-                // this.props.submit(values);
+                // console.log(values)
+                this.props.submit(values);
                 // this.props.dispatch({
                 // 	type: 'form/submitRegularForm',
                 // 	payload: values,
@@ -55,20 +58,7 @@ class ApplyForm extends PureComponent {
             fileList:[].concat(fileList),
         });
     }
-    handleRemove = (file) =>{
-        let { fileList } = this.state;
-        console.log(file)
-        for (let index = 0; index < fileList.length; index++) {
-            const element = fileList[index];
-            if(element.uid == file.uid){
-                fileList.splice(index,1);
-                break;
-            }
-        }
-        this.setState({
-            fileList:[].concat(fileList),
-        });
-    }
+    
     render() {
         const { submitting } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -129,7 +119,7 @@ class ApplyForm extends PureComponent {
                         className="Avatar-lable"
                     >
                         {/* <PicturesWall /> */}
-                        <FileuploadWithDrag fileList={fileList} handleRemove={this.handleRemove} handleFileList={this.handleFileList} />
+                        <FileuploadWithDrag handleFileList={this.handleFileList} />
                         <span>建议尺寸：800*800PX，单张大小不超过2M，最多可上传3张，拖动图片，第一张为主图</span>
                     </FormItem>
                     <FormItem
@@ -306,42 +296,57 @@ export default connect(({ sampleApply, sysparames, user, loading }) => ({
 class FileuploadWithDrag extends PureComponent {
     state = {
         items:[1,2],
+        fileList:[],
     }
     beforeUpload = () => {
-        const { fileList } = this.props;
+        const { fileList } = this.state;
         if(fileList.length>2){
             message.error(`文件已经超过${fileList.length}个了，请先删除后添加。`);
         }
-        return fileList.length>2
+        return fileList.length<2
     }
     onChange = (info)=> {
-        console.log(info.file)
-        let { fileList } = this.props;
-        this.props.handleFileList([].concat(fileList,[info.file]));
+        let { fileList } = this.state;
+        this.setState({
+            fileList:[].concat(info.fileList),
+        });
         if (info.file.status !== 'uploading') {
-            // console.log(info.file, info.fileList);
+
         }
         if (info.file.status === 'done') {
-            // let { fileList } = this.props;
-            // this.props.handleFileList([].concat(fileList,[info.file]));
+            this.props.handleFileList([].concat(fileList));
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
             message.error(`${info.file.name} file upload failed.`);
         }
     }
     onSortItems = (fileList) => {
-        this.props.handleFileList(fileList);
+        this.setState({
+            fileList:[].concat(fileList),
+        });
+        this.props.handleFileList([].concat(fileList));
     }
     onRemove = (file) => {
-        this.props.handleRemove(file);
+        let { fileList } = this.state;
+        for (let index = 0; index < fileList.length; index++) {
+            const element = fileList[index];
+            if(element.uid == file.uid){
+                fileList.splice(index,1);
+                break;
+            }
+        }
+        this.setState({
+            fileList:[].concat(fileList),
+        });
+        this.props.handleFileList([].concat(fileList));
     }
     render() {
-        let { fileList } = this.props;
+        let { fileList } = this.state;
         console.log(fileList);
         const props = {
             name: 'file',
             action: '../FileUpload/Upload',
-            multiple: true,
+            onChange: this.onChange,
             fileList:fileList,
             beforeUpload:this.beforeUpload,
             onRemove:this.onRemove,
@@ -350,19 +355,37 @@ class FileuploadWithDrag extends PureComponent {
             },
 
         };
+        // const props = {
+        //     name: 'file',
+        //     action: '../FileUpload/Upload',
+        //     headers: {
+        //         authorization: 'authorization-text',
+        //     },
+        //     onChange(info) {
+        //         if (info.file.status !== 'uploading') {
+        //             console.log(info.file, info.fileList);
+        //         }
+        //         if (info.file.status === 'done') {
+        //             message.success(`${info.file.name} file uploaded successfully`);
+        //         } else if (info.file.status === 'error') {
+        //             message.error(`${info.file.name} file upload failed.`);
+        //         }
+        //     },
+        // };
         return (
             <div className="clearfix">
                 {fileList.map((item, i) => {
                     return (
-                        <SortableItem
+                        <SortableItemUpload
                             key={i}
                             onSortItems={this.onSortItems}
                             items={fileList}
+                            item = {item}
                             sortId={i}>
-                        </SortableItem>
+                        </SortableItemUpload>
                     );
                 })}
-                <Upload onChange={this.onChange} {...props}>
+                <Upload  {...props}>
                     <Button className={styles.uploadBtn}  icon="plus" type="dashed"  >
                     </Button>
                 </Upload>
